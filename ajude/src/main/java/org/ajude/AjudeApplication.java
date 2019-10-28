@@ -1,4 +1,4 @@
-package org.ajude.ajude;
+package org.ajude;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
