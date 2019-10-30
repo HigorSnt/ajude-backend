@@ -1,4 +1,4 @@
-package org.ajude.entities;
+package org.ajude.entities.users;
 
 import javax.persistence.Entity;
 
