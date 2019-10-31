@@ -6,6 +6,7 @@ import org.ajude.entities.users.User;
 import org.ajude.entities.users.dtos.UserEmailPassword;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @RequestMapping("/auth")
 public class LoginController {
 
-    @Value("${jwt.KEY}")
+    @Value("${jwt.key}")
     private String KEY;
 
     private UserService userService;
@@ -30,6 +31,7 @@ public class LoginController {
     public LoginController() {
     }
 
+    @Autowired
     public LoginController(UserService userService, JwtService jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;

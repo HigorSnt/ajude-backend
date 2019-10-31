@@ -20,16 +20,13 @@ public class UserService {
         return this.userRepository.findById(email);
     }
 
-    public User createUser(User user) throws EmailAlreadyRegisteredException
-    {
-        if(getUser(user.getEmail()).isEmpty()) {
+    public User createUser(User user) throws EmailAlreadyRegisteredException {
+        if (getUser(user.getEmail()).isEmpty()) {
             //TODO ENVIA EMAIL
-            userRepository.save(user);
+            this.userRepository.save(user);
             return user;
-        }
-        else{
+        } else {
             throw new EmailAlreadyRegisteredException();
         }
-
     }
 }

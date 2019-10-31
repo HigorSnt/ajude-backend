@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,12 +21,10 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<User> createUser(User user)
-    {
-        try{
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        try {
             return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
-        } catch (EmailAlreadyRegisteredException e)
-        {
+        } catch (EmailAlreadyRegisteredException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }

@@ -1,0 +1,2 @@
+/api/user - cria usuário
+/api/auth/login - loga usuario

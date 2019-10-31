@@ -1,16 +1,21 @@
 package org.ajude.entities.users;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class User {
 
-    private String firstName;
-    private String lastName;
     @Id
     private String email;
-    private String creditCardNumber;
+    private String firstName;
+    private String lastName;
     private String password;
+    private String creditCardNumber;
+
+    public User() {
+    }
 
     public User(String firstName, String lastName, String email, String creditCardNumber, String password) {
         this.firstName = firstName;
@@ -54,5 +59,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(email, user.email) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(creditCardNumber, user.creditCardNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, firstName, lastName, password, creditCardNumber);
     }
 }
