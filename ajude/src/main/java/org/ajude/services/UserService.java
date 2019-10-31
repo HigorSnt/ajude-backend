@@ -1,5 +1,6 @@
 package org.ajude.services;
 
+import org.ajude.Exceptions.EmailAlreadyRegisteredException;
 import org.ajude.entities.users.User;
 import org.ajude.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,5 +18,18 @@ public class UserService {
 
     public Optional<User> getUser(String email) {
         return this.userRepository.findById(email);
+    }
+
+    public User createUser(User user) throws EmailAlreadyRegisteredException
+    {
+        if(getUser(user.getEmail()).isEmpty()) {
+            //TODO ENVIA EMAIL
+            userRepository.save(user);
+            return user;
+        }
+        else{
+            throw new EmailAlreadyRegisteredException();
+        }
+
     }
 }
