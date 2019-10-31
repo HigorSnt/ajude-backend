@@ -1,6 +1,6 @@
 package org.ajude.controllers;
 
-import org.ajude.Exceptions.EmailAlreadyRegisteredException;
+import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.entities.users.User;
 import org.ajude.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,8 @@ public class UserController {
     public ResponseEntity<User> createUser(@RequestBody User user) {
         try {
             return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
-        } catch (EmailAlreadyRegisteredException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
