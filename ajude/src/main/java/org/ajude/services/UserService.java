@@ -1,5 +1,6 @@
 package org.ajude.services;
 
+import org.ajude.entities.users.dtos.UserNameEmail;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.entities.users.User;
 import org.ajude.repositories.UserRepository;
@@ -24,11 +25,17 @@ public class UserService {
         return this.userRepository.findById(email);
     }
 
-    public User createUser(User user) throws EmailAlreadyRegisteredException, MessagingException {
+    public UserNameEmail createUser(User user) throws EmailAlreadyRegisteredException, MessagingException {
         if (getUser(user.getEmail()).isEmpty()) {
             this.emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
             this.userRepository.save(user);
-            return user;
+
+            UserNameEmail userNameEmail = new UserNameEmail();
+            userNameEmail.setEmail(user.getEmail());
+            userNameEmail.setFirstName(user.getFirstName());
+            userNameEmail.setLastName(user.getLastName());
+
+            return userNameEmail;
         } else {
             throw new EmailAlreadyRegisteredException();
         }

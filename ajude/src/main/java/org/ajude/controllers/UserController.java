@@ -1,5 +1,6 @@
 package org.ajude.controllers;
 
+import org.ajude.entities.users.dtos.UserNameEmail;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.entities.users.User;
 import org.ajude.services.UserService;
@@ -21,9 +22,9 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserNameEmail> createUser(@RequestBody User user) {
         try {
-            return new ResponseEntity<User>(userService.createUser(user), HttpStatus.CREATED);
+            return new ResponseEntity<UserNameEmail>(userService.createUser(user), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
