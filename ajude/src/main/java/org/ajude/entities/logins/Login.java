@@ -1,14 +1,14 @@
-package org.ajude.entities.users.dtos;
+package org.ajude.entities.logins;
 
-public class UserEmailPassword {
+public class Login {
 
     private String email;
     private String password;
 
-    public UserEmailPassword() {
+    public Login() {
     }
 
-    public UserEmailPassword(String email, String password) {
+    public Login(String email, String password) {
         this.email = email;
         this.password = password;
     }

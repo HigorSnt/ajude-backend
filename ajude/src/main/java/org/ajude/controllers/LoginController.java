@@ -3,7 +3,7 @@ package org.ajude.controllers;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.ajude.entities.users.User;
-import org.ajude.entities.users.dtos.UserEmailPassword;
+import org.ajude.entities.logins.Login;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate (@RequestBody UserEmailPassword user) {
+    public ResponseEntity<LoginResponse> authenticate (@RequestBody Login user) {
         Optional<User> authUser = this.userService.getUser(user.getEmail());
 
         if (authUser.isEmpty()) {
