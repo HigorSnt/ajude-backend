@@ -11,11 +11,10 @@ public class User {
     private String email;
     private String firstName;
     private String lastName;
-    private String password;
     private String creditCardNumber;
+    private String password;
 
-    public User() {
-    }
+    public User() {}
 
     public User(String firstName, String lastName, String email, String creditCardNumber, String password) {
         this.firstName = firstName;
@@ -61,20 +60,19 @@ public class User {
         this.password = password;
     }
 
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof User)) return false;
         User user = (User) o;
-        return Objects.equals(email, user.email) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(password, user.password) &&
-                Objects.equals(creditCardNumber, user.creditCardNumber);
+        return email.equals(user.email);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(email, firstName, lastName, password, creditCardNumber);
+    public int hashCode()
+    {
+        return Objects.hash(email);
     }
 }
