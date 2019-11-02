@@ -13,7 +13,7 @@ public class AjudeApplication {
 	public FilterRegistrationBean<TokenFilter> filterJwt() {
 		FilterRegistrationBean<TokenFilter> filterRegistrationBean = new FilterRegistrationBean<>();
 		filterRegistrationBean.setFilter(new TokenFilter());
-		filterRegistrationBean.addUrlPatterns("");
+		filterRegistrationBean.addUrlPatterns("/api/forgotPassword/*");
 
 		return filterRegistrationBean;
 	}

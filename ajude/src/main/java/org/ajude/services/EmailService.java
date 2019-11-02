@@ -2,11 +2,12 @@ package org.ajude.services;
 
 import org.ajude.entities.mails.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -18,11 +19,15 @@ import java.util.Map;
 @Service
 public class EmailService {
 
-    @Autowired
-    JavaMailSender mailSender;
+    private JavaMailSender mailSender;
+    private SpringTemplateEngine engine;
 
     @Autowired
-    private TemplateEngine engine;
+    public EmailService(JavaMailSender mailSender,
+                        @Qualifier("springTemplateEngine") SpringTemplateEngine engine) {
+        this.mailSender = mailSender;
+        this.engine = engine;
+    }
 
     public void sendWelcomeEmail(String to, String name) throws MessagingException {
         Mail mail = new Mail();
@@ -40,17 +45,17 @@ public class EmailService {
 
         mail.setModel(model);
 
-        sendEmail(mail);
+        sendEmail(mail, "welcome-mail");
     }
 
-    private void sendEmail(Mail mail) throws MessagingException {
+    private void sendEmail(Mail mail, String template) throws MessagingException {
         MimeMessage message = this.mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         Context context = new Context();
         context.setVariables(mail.getModel());
         
-        String templateHTML = engine.process("welcome-mail", context);
+        String templateHTML = engine.process(template, context);
 
         helper.setTo(mail.getTo());
         helper.setSubject(mail.getSubject());
@@ -60,4 +65,25 @@ public class EmailService {
     }
 
 
+    public void sendForgotPasswordEmail(String email, String firstName,
+                                        String temporaryToken) throws MessagingException {
+
+        Mail mail = new Mail();
+        mail.setTo(email);
+        mail.setSubject("Recuperação de Senha");
+        mail.setText("Olá, " + firstName + " foi solicitado a recuperação da sua senha. " +
+                "Se não foi você, desconsidere este email!");
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", firstName);
+        model.put("link", "localhost:8080/api/auth/resetPassword/" + temporaryToken);
+        model.put("text", mail.getText());
+        model.put("date",
+                new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+        model.put("location", "Campina Grande, Brasil");
+
+        mail.setModel(model);
+
+        sendEmail(mail, "forgot-password-template");
+    }
 }

@@ -3,6 +3,7 @@ package org.ajude.services;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 import org.ajude.entities.users.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,12 @@ public class JwtService {
     private UserService userService;
 
     @Value("${jwt.tokenIndex}")
-    private Integer TOKEN_INDEX;
+    private Integer tokenIndex;
 
     @Value("${jwt.key}")
-    private String KEY;
+    private String key;
 
-    public JwtService() {
-    }
-
+    @Autowired
     public JwtService(UserService userService) {
         this.userService = userService;
     }
@@ -38,20 +37,24 @@ public class JwtService {
     public String getTokenUser (String authorizationHeader) throws ServletException {
         validateHeader(authorizationHeader);
 
-        String token = authorizationHeader.substring(TOKEN_INDEX);
+        String token = authorizationHeader.substring(this.tokenIndex);
         String subject = null;
 
         try {
-            subject = Jwts.parser()
-                    .setSigningKey(KEY)
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
+            subject = getSubject(token);
         } catch (SignatureException se) {
             throw new ServletException("INVALID OR EXPIRATED TOKEN");
         }
 
         return subject;
+    }
+
+    public String getSubject(String token) {
+        return Jwts.parser()
+                .setSigningKey(this.key)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     private void validateHeader (String header) throws ServletException {

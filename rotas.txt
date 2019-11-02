@@ -1,2 +1,4 @@
 /api/user - cria usuário
 /api/auth/login - loga usuario
+/api/auth/forgotPassword/{email} - solicita alteração na senha
+/api/auth/resetPassword/{token} - altera nova senha

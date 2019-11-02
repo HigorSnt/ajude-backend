@@ -14,11 +14,12 @@ import java.util.Optional;
 public class UserService {
 
     private UserRepository<User, String> userRepository;
-    @Autowired
     private EmailService emailService;
 
-    public UserService(UserRepository<User, String> userRepository) {
+    @Autowired
+    public UserService(UserRepository<User, String> userRepository, EmailService emailService) {
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public Optional<User> getUser(String email) {
@@ -38,6 +39,23 @@ public class UserService {
             return userNameEmail;
         } else {
             throw new EmailAlreadyRegisteredException();
+        }
+    }
+
+    public void forgotPassword(String email, String temporaryToken) throws MessagingException {
+        Optional<User> user = getUser(email);
+
+        this.emailService.sendForgotPasswordEmail(user.get().getEmail(),
+                user.get().getFirstName(), temporaryToken);
+    }
+
+    public void resetPassword(String email, String newPassword) {
+        Optional<User> optUser = getUser(email);
+        if (!optUser.isEmpty()){
+            User user = optUser.get();
+
+            user.setPassword(newPassword);
+            this.userRepository.save(user);
         }
     }
 }

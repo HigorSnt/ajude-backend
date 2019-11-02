@@ -1,7 +1,9 @@
 package org.ajude.controllers;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.ajude.entities.logins.Password;
 import org.ajude.entities.users.User;
 import org.ajude.entities.logins.Login;
 import org.ajude.services.JwtService;
@@ -10,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.servlet.ServletException;
 import java.util.Date;
 import java.util.Optional;
 
@@ -23,13 +24,10 @@ import java.util.Optional;
 public class LoginController {
 
     @Value("${jwt.key}")
-    private String KEY;
+    private String key;
 
     private UserService userService;
     private JwtService jwtService;
-
-    public LoginController() {
-    }
 
     @Autowired
     public LoginController(UserService userService, JwtService jwtService) {
@@ -38,7 +36,7 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate (@RequestBody Login user) {
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody Login user) {
         Optional<User> authUser = this.userService.getUser(user.getEmail());
 
         if (authUser.isEmpty()) {
@@ -49,13 +47,48 @@ public class LoginController {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
 
-        String token = Jwts.builder()
-                .setSubject(authUser.get().getEmail())
-                .signWith(SignatureAlgorithm.HS512, KEY)
-                .setExpiration(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
-                .compact();
+        String token = buildToken(authUser.get().getEmail(), 30);
 
         return new ResponseEntity(new LoginResponse(token), HttpStatus.OK);
+    }
+
+    @PostMapping("/forgotPassword/{email}")
+    public ResponseEntity<HttpStatus> forgotPassword(@PathVariable String email,
+                                                     @RequestHeader("Authorization") String header) throws ServletException, MessagingException {
+
+        if (header == null || !header.startsWith("Bearer ") ||
+                !this.jwtService.userHasPermission(header, email)) {
+
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        String subject = this.jwtService.getTokenUser(header);
+
+        String temporaryToken = buildToken(subject, 1);
+        this.userService.forgotPassword(subject, temporaryToken);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/resetPassword/{token}")
+    public ResponseEntity<HttpStatus> resetPassword(@PathVariable String token,
+                                                    @RequestBody Password newPassword) {
+        try {
+            String email = this.jwtService.getSubject(token);
+            this.userService.resetPassword(email, newPassword.getPassword());
+
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (ExpiredJwtException eje) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    private String buildToken(String email, Integer minutes) {
+        return Jwts.builder()
+                .setSubject(email)
+                .signWith(SignatureAlgorithm.HS512, key)
+                .setExpiration(new Date(System.currentTimeMillis() + minutes * 60 * 1000))
+                .compact();
     }
 
     private class LoginResponse {
