@@ -23,9 +23,9 @@ public class TokenFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
 
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String header = request.getHeader("Authorization");
-
         validateHeader(header);
 
         String token = header.substring(TOKEN_INDEX);
