@@ -1,14 +1,12 @@
 package org.ajude.controllers;
 
-import org.ajude.entities.users.Campaign;
+import org.ajude.entities.campaigns.Campaign;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.ServletException;
 
 @RestController
 @RequestMapping("/campaign")

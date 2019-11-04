@@ -1,6 +1,6 @@
 package org.ajude.services;
 
-import org.ajude.entities.users.Campaign;
+import org.ajude.entities.campaigns.Campaign;
 import org.ajude.repositories.CampaignRepository;
 import org.springframework.stereotype.Service;
 

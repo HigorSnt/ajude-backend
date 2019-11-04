@@ -1,11 +1,11 @@
-package org.ajude.entities.users;
+package org.ajude.entities.campaigns;
+
+import org.ajude.utils.Status;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.Date;
-import java.util.List;
-
 @Entity
 public class Campaign {
     @Id
@@ -15,15 +15,10 @@ public class Campaign {
     private String URLIdentifier;
     private String description;
     private Date deadline;
-
-    private enum status {ACTIVE, CLOSED, EXPIRED, FINISHED}
-
-    ;
+    private Status status;
     private double goal;
-    private String ownerEmail;
 
-    public Campaign() {
-    }
+    private String ownerEmail;
 
     public Long getId() {
         return id;
@@ -73,15 +68,15 @@ public class Campaign {
         this.goal = goal;
     }
 
+    public void setStatus(String s) {
+        //TODO
+    }
+
     public String getOwnerEmail() {
         return ownerEmail;
     }
 
     public void setOwnerEmail(String ownerEmail) {
         this.ownerEmail = ownerEmail;
-    }
-
-    public void setStatus(String s) {
-        //TODO
     }
 }
