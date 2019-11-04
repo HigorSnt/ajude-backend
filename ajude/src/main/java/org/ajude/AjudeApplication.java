@@ -13,11 +13,9 @@ public class AjudeApplication {
 	public FilterRegistrationBean<TokenFilter> filterJwt() {
 		FilterRegistrationBean<TokenFilter> filterRegistrationBean = new FilterRegistrationBean<>();
 		filterRegistrationBean.setFilter(new TokenFilter());
-<<<<<<< HEAD
-		filterRegistrationBean.addUrlPatterns("/api/forgotPassword/*");
-=======
-		filterRegistrationBean.addUrlPatterns("/campaign/register");
->>>>>>> 69649590c2b586a8994e9557143daa0630f8a9d5
+
+		filterRegistrationBean.addUrlPatterns("/campaign/register",
+				"/forgotPassword/*");
 
 		return filterRegistrationBean;
 	}

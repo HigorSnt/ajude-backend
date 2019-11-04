@@ -14,10 +14,7 @@ import java.io.IOException;
 
 public class TokenFilter extends GenericFilterBean {
 
-    private final Integer TOKEN_INDEX = 7;
-
-    @Value("${jwt.key}")
-    private String KEY;
+    private final String KEY = "!GFLWasIzyuc4K0Ge7vQxqj^RHqaxr3%&sp5C%XX852#Ym@kVb";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -28,19 +25,21 @@ public class TokenFilter extends GenericFilterBean {
         String header = request.getHeader("Authorization");
         validateHeader(header);
 
-        String token = header.substring(TOKEN_INDEX);
+        String token = header.substring(7);
 
         try {
             Jwts.parser()
                     .setSigningKey(KEY)
                     .parseClaimsJws(token)
                     .getBody();
+
         } catch (SignatureException | ExpiredJwtException |
                 MalformedJwtException | PrematureJwtException |
                 UnsupportedJwtException | IllegalArgumentException e) {
 
             ((HttpServletResponse) servletResponse).sendError(
                     HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
