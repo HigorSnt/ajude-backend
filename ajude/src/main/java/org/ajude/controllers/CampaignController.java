@@ -1,6 +1,7 @@
 package org.ajude.controllers;
 
 import org.ajude.entities.campaigns.Campaign;
+import org.ajude.exceptions.InvalidDateException;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,7 @@ public class CampaignController {
         }
 
         campaign.setOwnerEmail(userEmail);
+<<<<<<< HEAD
         return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
 
     }
@@ -48,4 +50,12 @@ public class CampaignController {
         }
     }
 
+=======
+        try {
+            return new ResponseEntity(campaignService.register(campaign), HttpStatus.CREATED);
+        } catch (InvalidDateException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+>>>>>>> 6d62548ceb813032987525b05a7cf2e4e4e8c04b
 }
