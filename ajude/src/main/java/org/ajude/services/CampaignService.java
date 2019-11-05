@@ -6,12 +6,8 @@ import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD
-import java.util.Optional;
-=======
 import java.time.Instant;
 import java.util.Date;
->>>>>>> 6d62548ceb813032987525b05a7cf2e4e4e8c04b
 
 @Service
 public class CampaignService {

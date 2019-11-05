@@ -36,8 +36,12 @@ public class CampaignController {
         }
 
         campaign.setOwnerEmail(userEmail);
-<<<<<<< HEAD
-        return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
+
+        try {
+            return new ResponseEntity(campaignService.register(campaign), HttpStatus.CREATED);
+        } catch (InvalidDateException e) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
 
     }
 
@@ -49,13 +53,4 @@ public class CampaignController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
-
-=======
-        try {
-            return new ResponseEntity(campaignService.register(campaign), HttpStatus.CREATED);
-        } catch (InvalidDateException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
->>>>>>> 6d62548ceb813032987525b05a7cf2e4e4e8c04b
 }
