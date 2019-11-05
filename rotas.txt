@@ -3,3 +3,4 @@
 /api/auth/forgotPassword/{email} - solicita alteração na senha
 /api/auth/resetPassword/{token} - altera nova senha
 /api/campaign/register - criar campanhas
+/api/campaign/{urlIdentifier} - pegar uma campanha

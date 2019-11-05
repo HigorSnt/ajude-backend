@@ -28,6 +28,7 @@ public class ThymeleafConfiguration {
         emailTemplateResolver.setPrefix("classpath:/templates/");
         emailTemplateResolver.setSuffix(".html");
         emailTemplateResolver.setTemplateMode("HTML");
+
         emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         return emailTemplateResolver;

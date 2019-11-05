@@ -28,15 +28,24 @@ public class CampaignController {
         String userEmail = null;
 
         try {
-            userEmail = jwtService.getTokenUser(token);
+            userEmail = this.jwtService.getTokenUser(token);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
 
         campaign.setOwnerEmail(userEmail);
-        return new ResponseEntity(campaignService.register(campaign), HttpStatus.CREATED);
+        return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
 
+    }
+
+    @GetMapping("/{campaign}")
+    public ResponseEntity<Campaign> getCampaign(@PathVariable String campaign) {
+        try {
+            return new ResponseEntity(this.campaignService.getCampaign(campaign), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 
 }

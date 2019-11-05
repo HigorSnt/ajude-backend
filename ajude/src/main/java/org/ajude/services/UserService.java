@@ -28,13 +28,14 @@ public class UserService {
 
     public UserNameEmail createUser(User user) throws EmailAlreadyRegisteredException, MessagingException {
         if (getUser(user.getEmail()).isEmpty()) {
-            this.emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
             this.userRepository.save(user);
 
             UserNameEmail userNameEmail = new UserNameEmail();
             userNameEmail.setEmail(user.getEmail());
             userNameEmail.setFirstName(user.getFirstName());
             userNameEmail.setLastName(user.getLastName());
+
+            this.emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
 
             return userNameEmail;
         } else {
