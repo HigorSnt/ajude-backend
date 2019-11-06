@@ -5,6 +5,7 @@ import org.ajude.utils.Status;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.Instant;
 import java.util.Date;
 
 @Entity
@@ -35,6 +36,16 @@ public class Campaign {
     }
 
     public Campaign() {
+    }
+
+    public void verifyDeadline() {
+        //TODO Uma campanha se torna vencida quando o deadline
+        // configurado para atingir a meta chegou e a meta não foi atingida.
+        // Finalmente, uma campanha é marcada como concluida
+        // quando ela atingir a meta e o deadline
+        if (this.deadline.before(Date.from(Instant.now()))) {
+            this.setStatus(Status.E);
+        }
     }
 
     public Long getId() {
@@ -99,5 +110,23 @@ public class Campaign {
 
     public void setOwnerEmail(String ownerEmail) {
         this.ownerEmail = ownerEmail;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Campaign campaign = (Campaign) o;
+
+        if (!id.equals(campaign.id)) return false;
+        return shortName.equals(campaign.shortName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + shortName.hashCode();
+        return result;
     }
 }

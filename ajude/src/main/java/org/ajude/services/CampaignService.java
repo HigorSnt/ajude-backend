@@ -35,6 +35,9 @@ public class CampaignService {
         Campaign campaign = this.campaignRepository.findByUrlIdentifier(urlIdentifier);
 
         if (campaign != null) {
+            campaign.verifyDeadline();
+            this.campaignRepository.save(campaign);
+
             return campaign;
         } else {
             throw new IllegalArgumentException();
@@ -43,12 +46,14 @@ public class CampaignService {
 
     public List<Campaign> searchCampaigns(String substring, String status) {
         List<Campaign> result = new ArrayList<>();
-        List<Campaign> campaigns = this.campaignRepository.findAll();
+        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCase(substring, status);
 
-        for (Campaign campaign : campaigns) {
-            if (campaign.getShortName().toLowerCase().contains(substring.toLowerCase())
-                    && (campaign.getStatus().equals(Status.valueOf(status)))) {
-                result.add(campaign);
+        for (Campaign c : campaigns) {
+            c.verifyDeadline();
+            this.campaignRepository.save(c);
+
+            if (!c.getStatus().equals(Status.valueOf(status))) {
+                campaigns.remove(c);
             }
         }
 
