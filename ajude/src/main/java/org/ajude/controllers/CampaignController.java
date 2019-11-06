@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/campaign")
 public class CampaignController {
@@ -38,7 +40,7 @@ public class CampaignController {
         campaign.setOwnerEmail(userEmail);
 
         try {
-            return new ResponseEntity(campaignService.register(campaign), HttpStatus.CREATED);
+            return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
         } catch (InvalidDateException e) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -52,5 +54,16 @@ public class CampaignController {
         } catch (IllegalArgumentException e) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/search/{substring}")
+    public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable String substring)  {
+        return new ResponseEntity(this.campaignService.searchCampaigns(substring, "A"), HttpStatus.OK);
+    }
+
+    @GetMapping("/search/{substring}/{status}")
+    public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable("substring") String substring,
+                                                          @PathVariable("status") String status)  {
+        return new ResponseEntity(this.campaignService.searchCampaigns(substring, status), HttpStatus.OK);
     }
 }

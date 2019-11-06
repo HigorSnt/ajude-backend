@@ -13,7 +13,7 @@ public class Campaign {
     @Id
     @GeneratedValue
     private Long id;
-    private String acronym;
+    private String shortName;
     private String urlIdentifier;
     private String description;
     private Date deadline;
@@ -21,11 +21,11 @@ public class Campaign {
     private Double goal;
     private String ownerEmail;
 
-    public Campaign(String acronym, String urlIdentifier,
+    public Campaign(String shortName, String urlIdentifier,
                     String description, Date deadline, Status status,
                     Double goal, String ownerEmail) {
 
-        this.acronym = acronym;
+        this.shortName = shortName;
         this.urlIdentifier = urlIdentifier;
         this.description = description;
         this.deadline = deadline;
@@ -45,12 +45,12 @@ public class Campaign {
         this.id = id;
     }
 
-    public String getAcronym() {
-        return acronym;
+    public String getShortName() {
+        return shortName;
     }
 
-    public void setAcronym(String acronym) {
-        this.acronym = acronym;
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
     public String getUrlIdentifier() {
