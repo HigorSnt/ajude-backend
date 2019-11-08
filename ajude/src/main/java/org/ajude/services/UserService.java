@@ -59,4 +59,10 @@ public class UserService {
             this.userRepository.save(user);
         }
     }
+
+    public void deleteComment(User user, String idComment)
+    {
+        user.deleteComment(idComment);
+        userRepository.save(user);
+    }
 }

@@ -56,8 +56,7 @@ public class LoginController {
     public ResponseEntity<HttpStatus> forgotPassword(@PathVariable String email,
                                                      @RequestHeader("Authorization") String header) throws ServletException, MessagingException {
 
-        if (header == null || !header.startsWith("Bearer ") ||
-                !this.jwtService.userHasPermission(header, email)) {
+        if (header == null || !header.startsWith("Bearer ") || !this.jwtService.userHasPermission(header, email)) {
 
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }

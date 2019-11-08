@@ -24,6 +24,11 @@ public class User {
         this.password = password;
     }
 
+    public void deleteComment(String idComment)
+    {
+        //deleta o email dele aq
+    }
+
     public String getFirstName() {
         return firstName;
     }
