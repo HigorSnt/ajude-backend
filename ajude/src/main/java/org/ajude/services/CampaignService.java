@@ -1,7 +1,10 @@
 package org.ajude.services;
 
+import org.ajude.dtos.CampaignDeadline;
+import org.ajude.dtos.CampaignGoal;
 import org.ajude.entities.Campaign;
 import org.ajude.exceptions.InvalidDateException;
+import org.ajude.exceptions.InvalidGoalException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.repositories.CampaignRepository;
@@ -21,12 +24,10 @@ public class CampaignService {
         this.campaignRepository = campaignRepository;
     }
 
-    public Campaign register(Campaign campaign) throws InvalidDateException {
+    public Campaign register(Campaign campaign) throws InvalidDateException, InvalidGoalException {
 
-        if (campaign.getDeadline().before(Date.from(Instant.now()))) {
-            throw new InvalidDateException();
-        }
-
+        verifyDate(campaign.getDeadline());
+        verifyGoal(campaign.getGoal());
         campaign.setStatus(Status.A);
         this.campaignRepository.save(campaign);
 
@@ -66,10 +67,7 @@ public class CampaignService {
             throws UnauthorizedException, NotFoundException {
 
         Campaign campaign = this.getCampaign(campaignUrl);
-
-        if (!campaign.getOwnerEmail().equals(userEmail)) {
-            throw new UnauthorizedException();
-        }
+        verifyIfIsOwner(userEmail, campaign);
 
         if (campaign.getStatus().equals(Status.A)) {
             campaign.setStatus(Status.C);
@@ -77,5 +75,49 @@ public class CampaignService {
         }
 
         return campaign;
+    }
+
+    public Campaign setDeadline(String campaignUrl, CampaignDeadline newDeadline, String userEmail)
+            throws NotFoundException, UnauthorizedException, InvalidDateException {
+
+        Campaign campaign = this.getCampaign(campaignUrl);
+        verifyIfIsOwner(userEmail, campaign);
+
+        verifyDate(newDeadline.getDeadline());
+
+        campaign.setDeadline(newDeadline.getDeadline());
+        this.campaignRepository.saveAndFlush(campaign);
+        return campaign;
+    }
+
+    public Campaign setGoal(String campaignUrl, CampaignGoal newGoal, String userEmail)
+            throws NotFoundException, UnauthorizedException, InvalidDateException, InvalidGoalException {
+
+        Campaign campaign = this.getCampaign(campaignUrl);
+        verifyIfIsOwner(userEmail, campaign);
+        verifyDate(campaign.getDeadline());
+        verifyGoal(newGoal.getGoal());
+
+        campaign.setGoal(newGoal.getGoal());
+        this.campaignRepository.saveAndFlush(campaign);
+        return campaign;
+    }
+
+    private void verifyGoal(double goal) throws InvalidGoalException {
+        if (goal <= 0){
+            throw new InvalidGoalException();
+        }
+    }
+
+    private void verifyDate(Date deadline) throws InvalidDateException {
+        if (deadline.before(Date.from(Instant.now()))) {
+            throw new InvalidDateException();
+        }
+    }
+
+    private void verifyIfIsOwner(String userEmail, Campaign campaign) throws UnauthorizedException {
+        if (!campaign.getOwnerEmail().equals(userEmail)) {
+            throw new UnauthorizedException();
+        }
     }
 }

@@ -17,7 +17,8 @@ public class AjudeApplication {
 		filterRegistrationBean.addUrlPatterns("/campaign/register",
 				                              "/forgotPassword/*",
 									    	  "/campaign/*",
-									    	  "/campaign/closeCampaign/*");
+									    	  "/campaign/closeCampaign/*",
+				 							  "/campaign/setDeadline/*");
 
 		return filterRegistrationBean;
 	}
