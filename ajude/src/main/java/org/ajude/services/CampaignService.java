@@ -138,7 +138,7 @@ public class CampaignService {
     }
 
     private void verifyIfIsOwner(String userEmail, Campaign campaign) throws UnauthorizedException {
-        if (!campaign.getOwnerEmail().equals(userEmail)) {
+        if (!campaign.getOwner().getEmail().equals(userEmail)) {
             throw new UnauthorizedException();
         }
     }

@@ -23,7 +23,7 @@ public class TokenFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String header = request.getHeader("Authorization");
         validateHeader(header);
-
+        System.out.println("Passou no filtro");
         String token = header.substring(7);
 
         try {

@@ -1,5 +1,7 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +17,7 @@ public class User {
     private String password;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @JsonIgnore
     private List<Campaign> campaigns;
 
     public User() {

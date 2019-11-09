@@ -1,5 +1,7 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,9 +13,11 @@ public class Comment {
     private String comment;
 
     @OneToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
     private Comment reply;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JsonIgnore
     private User owner;
 
     public Comment() {

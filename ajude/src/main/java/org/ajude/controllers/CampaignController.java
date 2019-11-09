@@ -99,14 +99,14 @@ public class CampaignController {
         }
     }
 
-    @PutMapping("/setDeadline/{campaignUrl}")
+    @PutMapping("/{campaignUrl}/setDeadline")
     public ResponseEntity setDeadline(@RequestHeader("Authorization") String token,
                                       @PathVariable("campaignUrl") String campaignUrl,
                                       @RequestBody CampaignDeadline newDeadline) {
 
         String userEmail;
         try {
-            userEmail = this.jwtService.getTokenUser(token);
+            userEmail = this.jwtService.getSubjectByHeader(token);
         } catch (ServletException e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
@@ -168,14 +168,14 @@ public class CampaignController {
         }
     }
 
-    @PutMapping("/setGoal/{campaignUrl}")
+    @PutMapping("/{campaignUrl}/setGoal")
     public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
                                       @PathVariable("campaignUrl") String campaignUrl,
                                       @RequestBody CampaignGoal newGoal){
 
         String userEmail;
         try {
-            userEmail = this.jwtService.getTokenUser(token);
+            userEmail = this.jwtService.getSubjectByHeader(token);
         } catch (ServletException e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);

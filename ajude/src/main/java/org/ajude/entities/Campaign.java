@@ -1,5 +1,6 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ajude.exceptions.CommentNotFoundException;
 import org.ajude.utils.Status;
 
@@ -23,9 +24,11 @@ public class Campaign {
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "idUser")
+    @JsonIgnore
     private User owner;
 
     @OneToMany(fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Comment> comments;
 
     public Campaign(String shortName, String urlIdentifier, String description,
