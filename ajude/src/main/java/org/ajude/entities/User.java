@@ -1,7 +1,7 @@
 package org.ajude.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,19 +14,28 @@ public class User {
     private String creditCardNumber;
     private String password;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    private List<Campaign> campaigns;
+
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String creditCardNumber, String password) {
+    public User(String email, String firstName, String lastName,
+                String creditCardNumber, String password, List<Campaign> campaigns) {
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
         this.creditCardNumber = creditCardNumber;
         this.password = password;
+        this.campaigns = campaigns;
     }
 
-    public void deleteComment(String idComment) {
-        //deleta o email dele aq
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
@@ -45,10 +54,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public String getCreditCardNumber() {
         return creditCardNumber;
     }
@@ -65,6 +70,13 @@ public class User {
         this.password = password;
     }
 
+    public List<Campaign> getCampaigns() {
+        return campaigns;
+    }
+
+    public void setCampaigns(List<Campaign> campaigns) {
+        this.campaigns = campaigns;
+    }
 
     @Override
     public boolean equals(Object o) {

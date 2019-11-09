@@ -1,6 +1,8 @@
 package org.ajude.services;
 
 import org.ajude.entities.Campaign;
+import org.ajude.entities.Comment;
+import org.ajude.exceptions.CommentNotFoundException;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
@@ -67,7 +69,7 @@ public class CampaignService {
 
         Campaign campaign = this.getCampaign(campaignUrl);
 
-        if (!campaign.getOwnerEmail().equals(userEmail)) {
+        if (!campaign.getOwner().getEmail().equals(userEmail)) {
             throw new UnauthorizedException();
         }
 
@@ -77,5 +79,24 @@ public class CampaignService {
         }
 
         return campaign;
+    }
+
+    public Comment addCampaignComment(String campaignUrl, Comment comment) {
+        Campaign campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+
+        Comment c = campaign.addComment(comment);
+        this.campaignRepository.save(campaign);
+
+        return c;
+    }
+
+    public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws CommentNotFoundException {
+        Campaign campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+
+        Comment c = campaign.addCommentResponse(commentId, reply);
+
+        this.campaignRepository.save(campaign);
+
+        return c;
     }
 }

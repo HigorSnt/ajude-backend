@@ -27,21 +27,21 @@ public class JwtService {
     }
 
     public boolean userHasPermission(String authorizationHeader, String email) throws ServletException {
-        String subject = getTokenUser(authorizationHeader);
+        String subject = getSubjectByHeader(authorizationHeader);
 
         Optional<User> optionalUser = this.userService.getUser(subject);
 
         return optionalUser.isPresent() && optionalUser.get().getEmail().equals(email);
     }
 
-    public String getTokenUser(String authorizationHeader) throws ServletException {
+    public String getSubjectByHeader(String authorizationHeader) throws ServletException {
         validateHeader(authorizationHeader);
 
         String token = authorizationHeader.substring(this.tokenIndex);
         String subject = null;
 
         try {
-            subject = getSubject(token);
+            subject = getSubjectByToken(token);
         } catch (SignatureException se) {
             throw new ServletException("INVALID OR EXPIRATED TOKEN");
         }
@@ -49,7 +49,7 @@ public class JwtService {
         return subject;
     }
 
-    public String getSubject(String token) {
+    public String getSubjectByToken(String token) {
         return Jwts.parser()
                 .setSigningKey(this.key)
                 .parseClaimsJws(token)

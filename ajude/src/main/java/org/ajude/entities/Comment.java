@@ -1,20 +1,37 @@
 package org.ajude.entities;
 
+import javax.persistence.*;
+
+@Entity
 public class Comment {
 
+    @Id
+    @GeneratedValue
+    private Long id;
     private String comment;
-    private String ownerEmail;
-    private Comment answer;
-    private Long campaignID;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private Comment reply;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private User owner;
 
     public Comment() {
     }
 
-    public Comment(String comment, String ownerEmail, Comment answer, Long campaignID) {
+    public Comment(Long id, String comment, Comment reply, User owner) {
+        this.id = id;
         this.comment = comment;
-        this.ownerEmail = ownerEmail;
-        this.answer = answer;
-        this.campaignID = campaignID;
+        this.reply = reply;
+        this.owner = owner;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getComment() {
@@ -25,27 +42,19 @@ public class Comment {
         this.comment = comment;
     }
 
-    public String getOwnerEmail() {
-        return ownerEmail;
+    public Comment getReply() {
+        return reply;
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void setReply(Comment reply) {
+        this.reply = reply;
     }
 
-    public Comment getAnswer() {
-        return answer;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setAnswer(Comment answer) {
-        this.answer = answer;
-    }
-
-    public Long getCampaignID() {
-        return campaignID;
-    }
-
-    public void setCampaignID(Long campaignID) {
-        this.campaignID = campaignID;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

@@ -1,12 +1,12 @@
 package org.ajude.entities;
 
+import org.ajude.exceptions.CommentNotFoundException;
 import org.ajude.utils.Status;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Campaign {
@@ -20,19 +20,24 @@ public class Campaign {
     private Date deadline;
     private Status status;
     private Double goal;
-    private String ownerEmail;
 
-    public Campaign(String shortName, String urlIdentifier,
-                    String description, Date deadline, Status status,
-                    Double goal, String ownerEmail) {
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "idUser")
+    private User owner;
 
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Comment> comments;
+
+    public Campaign(String shortName, String urlIdentifier, String description,
+                    Date deadline, Status status, Double goal, User owner, List<Comment> comments) {
         this.shortName = shortName;
         this.urlIdentifier = urlIdentifier;
         this.description = description;
         this.deadline = deadline;
         this.status = status;
         this.goal = goal;
-        this.ownerEmail = ownerEmail;
+        this.owner = owner;
+        this.comments = comments;
     }
 
     public Campaign() {
@@ -46,6 +51,24 @@ public class Campaign {
         if (this.deadline.before(Date.from(Instant.now()))) {
             this.setStatus(Status.E);
         }
+    }
+
+    public Comment addComment(Comment comment) {
+        this.comments.add(comment);
+
+        return comment;
+    }
+
+    public Comment addCommentResponse(Long commentId, Comment reply) throws CommentNotFoundException {
+        Comment comment = this.comments.stream().filter(c -> c.getId() == commentId).findAny().get();
+
+        if (comment != null) {
+            comment.setReply(reply);
+        } else {
+            throw new CommentNotFoundException();
+        }
+
+        return comment;
     }
 
     public Long getId() {
@@ -104,12 +127,20 @@ public class Campaign {
         this.goal = goal;
     }
 
-    public String getOwnerEmail() {
-        return ownerEmail;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

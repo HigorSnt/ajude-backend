@@ -45,7 +45,7 @@ public class UserController {
                                         @RequestBody String idComment){
 
         try{
-            String email = jwtService.getSubject(jwtService.getTokenUser(header));
+            String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
 
             if(jwtService.userHasPermission(header, email))
                 userService.deleteComment(userService.getUser(email).get(), idComment);

@@ -1,11 +1,13 @@
 package org.ajude.controllers;
 
 import org.ajude.entities.Campaign;
+import org.ajude.entities.Comment;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
+import org.ajude.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,13 @@ import java.util.List;
 public class CampaignController {
 
     private CampaignService campaignService;
+    private UserService userService;
     private JwtService jwtService;
 
     @Autowired
-    public CampaignController(CampaignService campaignService, JwtService jwtService) {
+    public CampaignController(CampaignService campaignService, UserService userService, JwtService jwtService) {
         this.campaignService = campaignService;
+        this.userService = userService;
         this.jwtService = jwtService;
     }
 
@@ -33,13 +37,13 @@ public class CampaignController {
 
         String userEmail = null;
         try {
-            userEmail = this.jwtService.getTokenUser(token);
+            userEmail = this.jwtService.getSubjectByHeader(token);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
 
-        campaign.setOwnerEmail(userEmail);
+        campaign.setOwner(this.userService.getUser(userEmail).get());
 
         try {
             return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
@@ -49,7 +53,7 @@ public class CampaignController {
 
     }
 
-    @GetMapping("/{campaign}")
+    @GetMapping("/{campaignUrl}")
     public ResponseEntity getCampaign(@PathVariable String campaign) {
         try {
             return new ResponseEntity(this.campaignService.getCampaign(campaign), HttpStatus.OK);
@@ -69,13 +73,13 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.searchCampaigns(substring, status), HttpStatus.OK);
     }
 
-    @PutMapping("/closeCampaign/{campaignUrl}")
+    @PutMapping("/{campaignUrl}/closeCampaign")
     public ResponseEntity closeCampaign(@RequestHeader("Authorization") String token,
                                         @PathVariable("campaignUrl") String campaignUrl) {
 
         String userEmail = null;
         try {
-            userEmail = this.jwtService.getTokenUser(token);
+            userEmail = this.jwtService.getSubjectByHeader(token);
         } catch (ServletException e) {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
@@ -91,5 +95,45 @@ public class CampaignController {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    @PostMapping("{campaignUrl}/comment/")
+    public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
+                                                      @PathVariable("campaignUrl") String campaign,
+                                                      @RequestHeader("Authorization") String token) {
+        String subject = null;
+
+        try {
+            subject = this.jwtService.getSubjectByHeader(token);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+
+        comment.setOwner(this.userService.getUser(subject).get());
+        return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
+    }
+
+    @PostMapping("{campaignUrl}/comment/{id}")
+    public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
+                                                      @PathVariable("campaignUrl") String campaign,
+                                                      @PathVariable("id") Long commentId,
+                                                      @RequestHeader("Authorization") String token) {
+        String subject = null;
+
+        try {
+            subject = this.jwtService.getSubjectByHeader(token);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+
+        reply.setOwner(this.userService.getUser(subject).get());
+
+        try {
+            return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
     }
 }

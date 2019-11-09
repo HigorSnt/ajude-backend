@@ -61,7 +61,7 @@ public class LoginController {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
 
-        String subject = this.jwtService.getTokenUser(header);
+        String subject = this.jwtService.getSubjectByHeader(header);
 
         String temporaryToken = buildToken(subject, 1);
         this.userService.forgotPassword(subject, temporaryToken);
@@ -73,7 +73,7 @@ public class LoginController {
     public ResponseEntity<HttpStatus> resetPassword(@PathVariable String token,
                                                     @RequestBody Password newPassword) {
         try {
-            String email = this.jwtService.getSubject(token);
+            String email = this.jwtService.getSubjectByToken(token);
             this.userService.resetPassword(email, newPassword.getPassword());
 
             return new ResponseEntity(HttpStatus.OK);
