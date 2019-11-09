@@ -10,5 +10,5 @@ public interface CampaignRepository<T, Long> extends JpaRepository<Campaign, Lon
 
     Campaign findByUrlIdentifier(String urlIdentifier);
 
-    List<Campaign> findByShortNameContainingIgnoreCase(String substring, String status);
+   // List<Campaign> findByShortNameContainingIgnoreCase(String substring, String status);
 }

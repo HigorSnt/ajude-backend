@@ -34,7 +34,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping
+    /*@DeleteMapping
     public ResponseEntity deleteComment(@RequestHeader("Authorization") String header,
                                         @RequestBody String idComment){
 
@@ -48,5 +48,5 @@ public class UserController {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
 
-    }
+    }*/
 }
