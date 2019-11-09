@@ -1,16 +1,19 @@
 package org.ajude.controllers;
 
-import org.ajude.entities.users.dtos.UserNameEmail;
+import org.ajude.dtos.UserNameEmail;
+import org.ajude.entities.User;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
-import org.ajude.entities.users.User;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.ServletException;
+import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping("/user")
@@ -28,9 +31,12 @@ public class UserController {
     public ResponseEntity<UserNameEmail> createUser(@RequestBody User user) {
         try {
             return new ResponseEntity<>(this.userService.createUser(user), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (EmailAlreadyRegisteredException eare) {
+            eare.printStackTrace();
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (MessagingException me) {
+            me.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

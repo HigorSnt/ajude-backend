@@ -1,4 +1,4 @@
-package org.ajude.entities.users.dtos;
+package org.ajude.dtos;
 
 public class UserNameEmail {
 

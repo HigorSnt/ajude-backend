@@ -1,7 +1,6 @@
 package org.ajude.filters;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -45,7 +44,7 @@ public class TokenFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    public void validateHeader (String header) throws ServletException {
+    public void validateHeader(String header) throws ServletException {
         if (header == null || !header.startsWith("Bearer ")) {
             throw new ServletException("MISSING OR BADLY FORMED TOKEN");
         }

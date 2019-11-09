@@ -1,6 +1,6 @@
 package org.ajude.controllers;
 
-import org.ajude.entities.campaigns.Campaign;
+import org.ajude.entities.Campaign;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
@@ -29,7 +29,7 @@ public class CampaignController {
 
     @PostMapping("/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String token,
-                                           @RequestBody Campaign campaign){
+                                           @RequestBody Campaign campaign) {
 
         String userEmail = null;
         try {
@@ -59,19 +59,19 @@ public class CampaignController {
     }
 
     @GetMapping("/search/{substring}")
-    public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable String substring)  {
+    public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable String substring) {
         return new ResponseEntity(this.campaignService.searchCampaigns(substring, "A"), HttpStatus.OK);
     }
 
     @GetMapping("/search/{substring}/{status}")
     public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable("substring") String substring,
-                                                          @PathVariable("status") String status)  {
+                                                          @PathVariable("status") String status) {
         return new ResponseEntity(this.campaignService.searchCampaigns(substring, status), HttpStatus.OK);
     }
 
     @PutMapping("/closeCampaign/{campaignUrl}")
     public ResponseEntity closeCampaign(@RequestHeader("Authorization") String token,
-                                        @PathVariable("campaignUrl") String campaignUrl){
+                                        @PathVariable("campaignUrl") String campaignUrl) {
 
         String userEmail = null;
         try {

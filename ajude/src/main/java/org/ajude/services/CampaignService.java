@@ -1,6 +1,6 @@
 package org.ajude.services;
 
-import org.ajude.entities.campaigns.Campaign;
+import org.ajude.entities.Campaign;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
@@ -23,7 +23,7 @@ public class CampaignService {
 
     public Campaign register(Campaign campaign) throws InvalidDateException {
 
-        if (campaign.getDeadline().before(Date.from(Instant.now()))){
+        if (campaign.getDeadline().before(Date.from(Instant.now()))) {
             throw new InvalidDateException();
         }
 

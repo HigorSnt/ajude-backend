@@ -2,7 +2,7 @@ package org.ajude.services;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
-import org.ajude.entities.users.User;
+import org.ajude.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class JwtService {
         return optionalUser.isPresent() && optionalUser.get().getEmail().equals(email);
     }
 
-    public String getTokenUser (String authorizationHeader) throws ServletException {
+    public String getTokenUser(String authorizationHeader) throws ServletException {
         validateHeader(authorizationHeader);
 
         String token = authorizationHeader.substring(this.tokenIndex);
@@ -57,7 +57,7 @@ public class JwtService {
                 .getSubject();
     }
 
-    private void validateHeader (String header) throws ServletException {
+    private void validateHeader(String header) throws ServletException {
         if (header == null || !header.startsWith("Bearer ")) {
             throw new ServletException("MISSING OR BADLY FORMED TOKEN");
         }

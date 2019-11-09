@@ -1,4 +1,4 @@
-package org.ajude.entities.users;
+package org.ajude.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,7 +14,8 @@ public class User {
     private String creditCardNumber;
     private String password;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String firstName, String lastName, String email, String creditCardNumber, String password) {
         this.firstName = firstName;
@@ -24,8 +25,7 @@ public class User {
         this.password = password;
     }
 
-    public void deleteComment(String idComment)
-    {
+    public void deleteComment(String idComment) {
         //deleta o email dele aq
     }
 
@@ -67,8 +67,7 @@ public class User {
 
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
@@ -76,8 +75,7 @@ public class User {
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(email);
     }
 }

@@ -1,4 +1,4 @@
-package org.ajude.entities.logins;
+package org.ajude.entities;
 
 public class Password {
 

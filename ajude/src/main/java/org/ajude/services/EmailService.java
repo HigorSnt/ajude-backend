@@ -1,24 +1,25 @@
 package org.ajude.services;
 
-import org.ajude.entities.mails.Mail;
+import org.ajude.entities.Mail;
+import org.apache.commons.io.IOUtils;
+import org.javatuples.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +28,18 @@ public class EmailService {
 
     private JavaMailSender mailSender;
     private SpringTemplateEngine engine;
+    private Pair<InputStreamSource, MultipartFile> ajude;
+    private Pair<InputStreamSource, MultipartFile> facebook;
+    private Pair<InputStreamSource, MultipartFile> instagram;
 
     @Autowired
     public EmailService(JavaMailSender mailSender,
-                        @Qualifier("springTemplateEngine") SpringTemplateEngine engine) {
+                        @Qualifier("springTemplateEngine") SpringTemplateEngine engine) throws IOException {
         this.mailSender = mailSender;
         this.engine = engine;
+        this.ajude = getImageContent("ajude.png");
+        this.facebook = getImageContent("facebook.png");
+        this.instagram = getImageContent("instagram.png");
     }
 
     public void sendWelcomeEmail(String to, String name) throws MessagingException {
@@ -43,58 +50,13 @@ public class EmailService {
 
         Map<String, Object> model = new HashMap();
         model.put("name", name);
-        model.put("ajudeLogo", "ajude");
-        model.put("facebookLogo", "facebook");
-        model.put("instagramLogo", "instagram");
+        model.put("ajude", this.ajude.getValue1().getName());
+        model.put("facebook", this.facebook.getValue1().getName());
+        model.put("instagram", this.instagram.getValue1().getName());
 
         mail.setModel(model);
-
         sendEmail(mail, "welcome-mail");
     }
-
-    private void sendEmail(Mail mail, String template) throws MessagingException {
-        MimeMessage message = this.mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        Context context = new Context();
-        context.setVariables(mail.getModel());
-
-        helper.setTo(mail.getTo());
-        helper.setSubject(mail.getSubject());
-
-        String templateHTML = engine.process(template, context);
-        helper.setText(templateHTML, true);
-
-        /*
-        InputStreamSource ajudeSource = new ByteArrayResource(convertImageToByte("images/ajude.svg"));
-        InputStreamSource facebookSource = new ByteArrayResource(convertImageToByte("images/facebook.svg"));
-        InputStreamSource instagramSource = new ByteArrayResource(convertImageToByte("images/instagram.svg"));
-
-        helper.addInline("ajudeLogo", ajudeSource, "image/svg");
-        helper.addInline("facebookLogo", facebookSource, "image/svg");
-        helper.addInline("instagramLogo", instagramSource, "image/svg");*/
-
-        this.mailSender.send(message);
-    }
-
-    private byte[] convertImageToByte (String pathImage) {
-        File file = new File(pathImage);
-        byte[] image = new byte[(int) file.length()];
-        FileInputStream fileInputStream = null;
-
-        try {
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(image);
-            fileInputStream.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return image;
-    }
-
 
     public void sendForgotPasswordEmail(String email, String firstName,
                                         String temporaryToken) throws MessagingException {
@@ -102,19 +64,55 @@ public class EmailService {
         Mail mail = new Mail();
         mail.setTo(email);
         mail.setSubject("Recuperação de Senha");
-        mail.setText("Olá, " + firstName + " foi solicitado a recuperação da sua senha. " +
-                "Se não foi você, desconsidere este email!");
 
         Map<String, Object> model = new HashMap<>();
         model.put("name", firstName);
-        model.put("link", "localhost:8080/api/auth/resetPassword/" + temporaryToken);
-        model.put("text", mail.getText());
-        model.put("date",
-                new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-        model.put("location", "Campina Grande, Brasil");
+        model.put("token", temporaryToken);
+        model.put("ajude", this.ajude.getValue1().getName());
+        model.put("facebook", this.facebook.getValue1().getName());
+        model.put("instagram", this.instagram.getValue1().getName());
 
         mail.setModel(model);
-
-        sendEmail(mail, "forgot-password-template");
+        sendEmail(mail, "forgot-password");
     }
+
+    private void sendEmail(Mail mail, String template) throws MessagingException {
+        Context context = new Context();
+        context.setVariables(mail.getModel());
+
+        String templateHTML = this.engine.process(template, context);
+        MimeMessage message = this.mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+                StandardCharsets.UTF_8.name());
+
+        helper.setTo(mail.getTo());
+        helper.setSubject(mail.getSubject());
+        helper.setText(templateHTML, true);
+
+        helper.addInline(this.ajude.getValue1().getName(), this.ajude.getValue0(),
+                this.ajude.getValue1().getContentType());
+        helper.addInline(this.facebook.getValue1().getName(), this.facebook.getValue0(),
+                this.facebook.getValue1().getContentType());
+        helper.addInline(this.instagram.getValue1().getName(), this.instagram.getValue0(),
+                this.instagram.getValue1().getContentType());
+
+        this.mailSender.send(message);
+    }
+
+    private Pair<InputStreamSource, MultipartFile> getImageContent(String image) throws IOException {
+        InputStream inputStream = null;
+        InputStreamSource source = null;
+        byte[] imageByteArray = null;
+        MultipartFile multipartFile = null;
+
+        inputStream = this.getClass().getClassLoader().getResourceAsStream("static/images/" + image);
+        imageByteArray = IOUtils.toByteArray(inputStream);
+        multipartFile = new MockMultipartFile(image.substring(0, image.length() - 4),
+                inputStream.getClass().getName(),
+                "image/png", imageByteArray);
+        source = new ByteArrayResource(imageByteArray);
+
+        return new Pair(source, multipartFile);
+    }
+
 }

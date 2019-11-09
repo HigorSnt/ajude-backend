@@ -1,4 +1,4 @@
-package org.ajude.entities.campaigns;
+package org.ajude.entities;
 
 import org.ajude.utils.Status;
 

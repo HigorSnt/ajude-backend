@@ -22,7 +22,7 @@ public class ThymeleafConfiguration {
     }
 
     @Bean
-    public SpringResourceTemplateResolver htmlTemplateResolver(){
+    public SpringResourceTemplateResolver htmlTemplateResolver() {
         SpringResourceTemplateResolver emailTemplateResolver = new SpringResourceTemplateResolver();
 
         emailTemplateResolver.setPrefix("classpath:/templates/");

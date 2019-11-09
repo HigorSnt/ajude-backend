@@ -8,7 +8,7 @@ public enum Status {
     F("FINISHED");
 
 
-    private  String valor;
+    private String valor;
 
     Status(String valor) {
         this.valor = valor;
