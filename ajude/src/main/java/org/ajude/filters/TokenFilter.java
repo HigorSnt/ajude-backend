@@ -23,7 +23,6 @@ public class TokenFilter extends GenericFilterBean {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String header = request.getHeader("Authorization");
         validateHeader(header);
-        System.out.println("Passou no filtro");
         String token = header.substring(7);
 
         try {
@@ -31,11 +30,11 @@ public class TokenFilter extends GenericFilterBean {
                     .setSigningKey(KEY)
                     .parseClaimsJws(token)
                     .getBody();
-
         } catch (SignatureException | ExpiredJwtException |
                 MalformedJwtException | PrematureJwtException |
                 UnsupportedJwtException | IllegalArgumentException e) {
 
+            System.out.println("Talvez aqui");
             ((HttpServletResponse) servletResponse).sendError(
                     HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;

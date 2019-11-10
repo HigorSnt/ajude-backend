@@ -11,15 +11,18 @@ import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CampaignService {
+    @Autowired
     private CampaignRepository<Campaign, Long> campaignRepository;
 
     public CampaignService(CampaignRepository<Campaign, Long> campaignRepository) {
@@ -37,15 +40,14 @@ public class CampaignService {
     }
 
     public Campaign getCampaign(String urlIdentifier) throws NotFoundException {
-        Campaign campaign = this.campaignRepository.findByUrlIdentifier(urlIdentifier);
 
-        if (campaign != null) {
-            campaign.verifyDeadline();
-            this.campaignRepository.save(campaign);
+        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(urlIdentifier);
 
-            return campaign;
+        if (!campaign.isEmpty()) {
+            return campaign.get();
+
         } else {
-            throw new NotFoundException();
+            throw new NotFoundException("The Campaign " + urlIdentifier + " was not found");
         }
     }
 
@@ -80,23 +82,31 @@ public class CampaignService {
         return campaign;
     }
 
-    public Comment addCampaignComment(String campaignUrl, Comment comment) {
-        Campaign campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+    public Comment addCampaignComment(String campaignUrl, Comment comment) throws NotFoundException {
 
-        Comment c = campaign.addComment(comment);
-        this.campaignRepository.save(campaign);
+        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+        if (!campaign.isEmpty()) {
+            Campaign c = campaign.get();
+            Comment com = c.addComment(comment);
+            this.campaignRepository.save(c);
+            return com;
 
-        return c;
+        } else {
+            throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
+        }
     }
 
-    public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws CommentNotFoundException {
-        Campaign campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+    public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws CommentNotFoundException, NotFoundException {
 
-        Comment c = campaign.addCommentResponse(commentId, reply);
-
-        this.campaignRepository.save(campaign);
-
-        return c;
+        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+        if (!campaign.isEmpty()) {
+            Campaign c = campaign.get();
+            Comment com = c.addCommentResponse(commentId, reply);
+            this.campaignRepository.save(c);
+            return com;
+        } else {
+            throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
+        }
     }
 
     public Campaign setDeadline(String campaignUrl, CampaignDeadline newDeadline, String userEmail)
@@ -127,19 +137,19 @@ public class CampaignService {
 
     private void verifyGoal(double goal) throws InvalidGoalException {
         if (goal <= 0){
-            throw new InvalidGoalException();
+            throw new InvalidGoalException("Goal cannot be zero or less");
         }
     }
 
     private void verifyDate(Date deadline) throws InvalidDateException {
         if (deadline.before(Date.from(Instant.now()))) {
-            throw new InvalidDateException();
+            throw new InvalidDateException("Date needs to be in the future");
         }
     }
 
     private void verifyIfIsOwner(String userEmail, Campaign campaign) throws UnauthorizedException {
         if (!campaign.getOwner().getEmail().equals(userEmail)) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("User is not the owner of this campaign");
         }
     }
 }

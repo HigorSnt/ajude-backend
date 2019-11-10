@@ -39,7 +39,7 @@ public class UserService {
 
             return userNameEmail;
         } else {
-            throw new EmailAlreadyRegisteredException();
+            throw new EmailAlreadyRegisteredException("Alredy exist a user with this email");
         }
     }
 

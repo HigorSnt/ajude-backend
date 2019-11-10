@@ -1,6 +1,9 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,10 +14,10 @@ public class User {
 
     @Id
     private String email;
+    private String password;
     private String firstName;
     private String lastName;
     private String creditCardNumber;
-    private String password;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
     @JsonIgnore

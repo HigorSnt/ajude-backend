@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
@@ -28,16 +29,10 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserNameEmail> createUser(@RequestBody User user) {
-        try {
-            return new ResponseEntity<>(this.userService.createUser(user), HttpStatus.CREATED);
-        } catch (EmailAlreadyRegisteredException eare) {
-            eare.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        } catch (MessagingException me) {
-            me.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<UserNameEmail> createUser(@RequestBody User user)
+            throws EmailAlreadyRegisteredException, MessagingException {
+
+        return new ResponseEntity<>(this.userService.createUser(user), HttpStatus.CREATED);
     }
 
     /*@DeleteMapping

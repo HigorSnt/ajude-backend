@@ -5,6 +5,7 @@ import org.ajude.exceptions.CommentNotFoundException;
 import org.ajude.utils.Status;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +16,9 @@ public class Campaign {
     @Id
     @GeneratedValue
     private Long id;
+    @NotEmpty(message = "short name cannot be empty")
     private String shortName;
+    @NotEmpty(message = "urlIdentifier name cannot be empty")
     private String urlIdentifier;
     private String description;
     private Date deadline;

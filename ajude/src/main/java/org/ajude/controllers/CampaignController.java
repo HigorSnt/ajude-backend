@@ -4,10 +4,7 @@ import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
-import org.ajude.exceptions.InvalidDateException;
-import org.ajude.exceptions.InvalidGoalException;
-import org.ajude.exceptions.NotFoundException;
-import org.ajude.exceptions.UnauthorizedException;
+import org.ajude.exceptions.*;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
@@ -17,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -36,33 +34,17 @@ public class CampaignController {
 
     @PostMapping("/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String token,
-                                           @RequestBody Campaign campaign) {
+                                           @Valid @RequestBody Campaign campaign)
+            throws ServletException, InvalidGoalException, InvalidDateException {
 
-        String userEmail = null;
-        try {
-            userEmail = this.jwtService.getSubjectByHeader(token);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-
+        String userEmail = this.jwtService.getSubjectByHeader(token);
         campaign.setOwner(this.userService.getUser(userEmail).get());
-
-        try {
-            return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
-        } catch (InvalidDateException | InvalidGoalException e) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
     }
 
     @GetMapping("/{campaignUrl}")
-    public ResponseEntity getCampaign(@PathVariable String campaign) {
-        try {
-            return new ResponseEntity(this.campaignService.getCampaign(campaign), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity getCampaign(@PathVariable String urlIdentifier) throws NotFoundException {
+        return new ResponseEntity(this.campaignService.getCampaign(urlIdentifier), HttpStatus.OK);
     }
 
     @GetMapping("/search/{substring}")
@@ -78,68 +60,30 @@ public class CampaignController {
 
     @PutMapping("/{campaignUrl}/closeCampaign")
     public ResponseEntity closeCampaign(@RequestHeader("Authorization") String token,
-                                        @PathVariable("campaignUrl") String campaignUrl) {
+                                        @PathVariable("campaignUrl") String campaignUrl)
+            throws ServletException, UnauthorizedException, NotFoundException {
 
-        String userEmail;
-        try {
-            userEmail = this.jwtService.getSubjectByHeader(token);
-        } catch (ServletException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-
-        try {
-            return new ResponseEntity(this.campaignService.closeCampaign(campaignUrl, userEmail), HttpStatus.OK);
-        } catch (UnauthorizedException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        String userEmail = this.jwtService.getSubjectByHeader(token);
+        return new ResponseEntity(this.campaignService.closeCampaign(campaignUrl, userEmail), HttpStatus.OK);
     }
 
     @PutMapping("/{campaignUrl}/setDeadline")
     public ResponseEntity setDeadline(@RequestHeader("Authorization") String token,
                                       @PathVariable("campaignUrl") String campaignUrl,
-                                      @RequestBody CampaignDeadline newDeadline) {
+                                      @RequestBody CampaignDeadline newDeadline)
+            throws InvalidDateException, UnauthorizedException, NotFoundException, ServletException {
 
-        String userEmail;
-        try {
-            userEmail = this.jwtService.getSubjectByHeader(token);
-        } catch (ServletException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-
-        try {
-            return new ResponseEntity
-                    (this.campaignService.setDeadline(campaignUrl, newDeadline, userEmail),HttpStatus.OK);
-
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } catch (UnauthorizedException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        } catch (InvalidDateException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        String userEmail = this.jwtService.getSubjectByHeader(token);
+        return new ResponseEntity(this.campaignService.setDeadline(campaignUrl, newDeadline, userEmail),HttpStatus.OK);
     }
 
     @PostMapping("{campaignUrl}/comment/")
     public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
                                                       @PathVariable("campaignUrl") String campaign,
-                                                      @RequestHeader("Authorization") String token) {
-        String subject = null;
+                                                      @RequestHeader("Authorization") String token)
+            throws ServletException, NotFoundException {
 
-        try {
-            subject = this.jwtService.getSubjectByHeader(token);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        }
-
+        String subject = this.jwtService.getSubjectByHeader(token);
         comment.setOwner(this.userService.getUser(subject).get());
         return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
     }
@@ -148,51 +92,22 @@ public class CampaignController {
     public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
                                                       @PathVariable("campaignUrl") String campaign,
                                                       @PathVariable("id") Long commentId,
-                                                      @RequestHeader("Authorization") String token) {
-        String subject = null;
+                                                      @RequestHeader("Authorization") String token)
+            throws ServletException, CommentNotFoundException, NotFoundException {
 
-        try {
-            subject = this.jwtService.getSubjectByHeader(token);
-        } catch (ServletException e) {
-            e.printStackTrace();
-        }
-
+        String subject = this.jwtService.getSubjectByHeader(token);
         reply.setOwner(this.userService.getUser(subject).get());
-
-        try {
-            return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
     }
 
     @PutMapping("/{campaignUrl}/setGoal")
     public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
                                       @PathVariable("campaignUrl") String campaignUrl,
-                                      @RequestBody CampaignGoal newGoal){
+                                      @RequestBody CampaignGoal newGoal)
+            throws ServletException, UnauthorizedException, InvalidDateException, NotFoundException, InvalidGoalException {
 
-        String userEmail;
-        try {
-            userEmail = this.jwtService.getSubjectByHeader(token);
-        } catch (ServletException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-
-        try {
-            return new ResponseEntity(this.campaignService.setGoal(campaignUrl, newGoal, userEmail), HttpStatus.OK);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
-        } catch (UnauthorizedException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        } catch (InvalidDateException | InvalidGoalException e) {
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        String userEmail = this.jwtService.getSubjectByHeader(token);
+        return new ResponseEntity(this.campaignService.setGoal(campaignUrl, newGoal, userEmail), HttpStatus.OK);
     }
-
 }
+
