@@ -8,6 +8,7 @@ import org.ajude.exceptions.*;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
+import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,13 +50,13 @@ public class CampaignController {
 
     @GetMapping("/search/{substring}")
     public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable String substring) {
-        return new ResponseEntity(this.campaignService.searchCampaigns(substring, "A"), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.searchCampaigns(substring, Status.valueOf("A")), HttpStatus.OK);
     }
 
     @GetMapping("/search/{substring}/{status}")
     public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable("substring") String substring,
                                                           @PathVariable("status") String status) {
-        return new ResponseEntity(this.campaignService.searchCampaigns(substring, status), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.searchCampaigns(substring, Status.valueOf(status)), HttpStatus.OK);
     }
 
     @PutMapping("/{campaignUrl}/closeCampaign")

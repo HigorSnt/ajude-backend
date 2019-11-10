@@ -1,3 +1,4 @@
+# coding: utf-8
 import requests
 import json
 
@@ -51,9 +52,8 @@ for i in range(len(lista_campanhas)):
     header = {'Authorization': 'Bearer ' + auth}
         
     try:
-        r = requests.post(url+"/campaign/register", json=campaign, headers=header)
+        r = requests.post(url + "/campaign/register", json=campaign, headers=header)
         print("Campanha", campaign['shortName'], "cadastrada")
-
     except:
         print("Erro ao processar requisição")
         print("Campanha", campaign['shortName'])

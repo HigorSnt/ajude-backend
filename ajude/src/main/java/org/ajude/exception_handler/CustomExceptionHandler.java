@@ -17,13 +17,13 @@ import java.util.List;
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    /*@ExceptionHandler(Exception.class)
     public ResponseEntity handleAllExceptions(Exception ex, WebRequest request) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorResponse error = new ErrorResponse("SERVER ERROR", details, HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+    }*/
 
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     public final ResponseEntity handleEmailException(EmailAlreadyRegisteredException ex, WebRequest request) {
@@ -43,8 +43,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CommentNotFoundException.class)
     public final ResponseEntity handleCommentException(Exception ex, WebRequest request){
-        // TODO
-        return null;
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorResponse error = new ErrorResponse("COMMENT NOT EXISTS", details, HttpStatus.NOT_FOUND);
+        return new ResponseEntity(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({InvalidDateException.class, InvalidGoalException.class})

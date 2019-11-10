@@ -3,4 +3,11 @@
 /api/auth/forgotPassword/{email} - solicita alteração na senha
 /api/auth/resetPassword/{token} - altera nova senha
 /api/campaign/register - criar campanhas
-/api/campaign/{urlIdentifier} - pegar uma campanha
+/api/campaign/{campaignUrl} - pegar uma campanha
+/api/campaign/search/{substring} - pega campanhas ativa
+/api/campaign/search/{substring}/{status} - pega campanhas que possuem um status específico
+/api/campaign/{campaignUrl}/closeCampaign - encerra uma campanha
+/api/campaign/{campaignUrl}/setDeadline - altera o deadline
+/api/campaign/{campaignUrl}/comment - realiza um comentário em uma campanha
+/api/campaign/{campaignUrl}/comment/{id} - responde a um comentário em uma campanha
+/api/campaign/{campaignUrl}/setGoal - altera a meta

@@ -4,11 +4,7 @@ import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
-import org.ajude.exceptions.CommentNotFoundException;
-import org.ajude.exceptions.InvalidDateException;
-import org.ajude.exceptions.InvalidGoalException;
-import org.ajude.exceptions.NotFoundException;
-import org.ajude.exceptions.UnauthorizedException;
+import org.ajude.exceptions.*;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,20 +47,10 @@ public class CampaignService {
         }
     }
 
-    public List<Campaign> searchCampaigns(String substring, String status) {
-        List<Campaign> result = new ArrayList<>();
-        //List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCase(substring, status);
+    public List<Campaign> searchCampaigns(String substring, Status status) {
+        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring, status);
 
-        /*for (Campaign c : campaigns) {
-            c.verifyDeadline();
-            this.campaignRepository.save(c);
-
-            if (!c.getStatus().equals(Status.valueOf(status))) {
-                campaigns.remove(c);
-            }
-        }
-    */
-        return result;
+        return campaigns;
     }
 
     public Campaign closeCampaign(String campaignUrl, String userEmail)
@@ -97,7 +83,6 @@ public class CampaignService {
     }
 
     public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws CommentNotFoundException, NotFoundException {
-
         Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
         if (!campaign.isEmpty()) {
             Campaign c = campaign.get();
@@ -136,7 +121,7 @@ public class CampaignService {
     }
 
     private void verifyGoal(double goal) throws InvalidGoalException {
-        if (goal <= 0){
+        if (goal <= 0) {
             throw new InvalidGoalException("Goal cannot be zero or less");
         }
     }

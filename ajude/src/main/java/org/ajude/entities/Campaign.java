@@ -49,16 +49,6 @@ public class Campaign {
     public Campaign() {
     }
 
-    public void verifyDeadline() {
-        //TODO Uma campanha se torna vencida quando o deadline
-        // configurado para atingir a meta chegou e a meta não foi atingida.
-        // Finalmente, uma campanha é marcada como concluida
-        // quando ela atingir a meta e o deadline
-        if (this.deadline.before(Date.from(Instant.now()))) {
-            this.setStatus(Status.E);
-        }
-    }
-
     public Comment addComment(Comment comment) {
         this.comments.add(comment);
 
