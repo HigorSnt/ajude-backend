@@ -17,13 +17,13 @@ import java.util.List;
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-    /*@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity handleAllExceptions(Exception ex, WebRequest request) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorResponse error = new ErrorResponse("SERVER ERROR", details, HttpStatus.INTERNAL_SERVER_ERROR);
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
-    }*/
+    }
 
     @ExceptionHandler(EmailAlreadyRegisteredException.class)
     public final ResponseEntity handleEmailException(EmailAlreadyRegisteredException ex, WebRequest request) {
