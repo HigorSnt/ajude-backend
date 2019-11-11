@@ -14,6 +14,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String creditCardNumber;
+    private String username;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
     @JsonIgnore
@@ -22,13 +23,14 @@ public class User {
     public User() {
     }
 
-    public User(String email, String firstName, String lastName,
-                String creditCardNumber, String password, List<Campaign> campaigns) {
+    public User(String email, String password, String firstName, String lastName,
+                String creditCardNumber, String username, List<Campaign> campaigns) {
         this.email = email;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.creditCardNumber = creditCardNumber;
-        this.password = password;
+        this.username = username;
         this.campaigns = campaigns;
     }
 
@@ -38,6 +40,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -64,12 +74,12 @@ public class User {
         this.creditCardNumber = creditCardNumber;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public List<Campaign> getCampaigns() {

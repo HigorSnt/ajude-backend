@@ -1,8 +1,10 @@
 package org.ajude.services;
 
+import org.ajude.dtos.UserProfile;
 import org.ajude.entities.User;
 import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
+import org.ajude.exceptions.NotFoundException;
 import org.ajude.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,19 +24,33 @@ public class UserService {
         this.emailService = emailService;
     }
 
-    public Optional<User> getUser(String email) {
+    public Optional<User> getUserByEmail(String email) {
         return this.userRepository.findById(email);
     }
 
+    public UserProfile getUserByUsername(String username) throws NotFoundException {
+        User u = this.userRepository.findByUsername(username).get();
+
+        if (u != null) {
+            return new UserProfile(u.getEmail(), u.getFirstName(),
+                    u.getLastName(), u.getEmail());
+        } else {
+            throw new NotFoundException("The user " + username + " was not found.");
+        }
+    }
+
     public UserNameEmail createUser(User user) throws EmailAlreadyRegisteredException, MessagingException {
-        if (getUser(user.getEmail()).isEmpty()) {
+        if (getUserByEmail(user.getEmail()).isEmpty()) {
             this.emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
+
+            user.setUsername(user.getFirstName() + "." + user.getLastName() + "." + user.hashCode());
 
             this.userRepository.save(user);
             UserNameEmail userNameEmail = new UserNameEmail(
                     user.getEmail(),
                     user.getFirstName(),
-                    user.getLastName()
+                    user.getLastName(),
+                    user.getUsername()
             );
 
             return userNameEmail;
@@ -44,14 +60,14 @@ public class UserService {
     }
 
     public void forgotPassword(String email, String temporaryToken) throws MessagingException {
-        Optional<User> user = getUser(email);
+        Optional<User> user = getUserByEmail(email);
 
         this.emailService.sendForgotPasswordEmail(user.get().getEmail(),
                 user.get().getFirstName(), temporaryToken);
     }
 
     public void resetPassword(String email, String newPassword) {
-        Optional<User> optUser = getUser(email);
+        Optional<User> optUser = getUserByEmail(email);
         if (!optUser.isEmpty()) {
             User user = optUser.get();
 

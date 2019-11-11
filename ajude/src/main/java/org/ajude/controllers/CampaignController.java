@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/campaign")
+@RequestMapping("")
 public class CampaignController {
 
     private CampaignService campaignService;
@@ -33,33 +33,33 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/campaign/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String token,
                                            @Valid @RequestBody Campaign campaign)
             throws ServletException, InvalidGoalException, InvalidDateException {
 
         String userEmail = this.jwtService.getSubjectByHeader(token);
-        campaign.setOwner(this.userService.getUser(userEmail).get());
+        campaign.setOwner(this.userService.getUserByEmail(userEmail).get());
         return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{campaignUrl}")
+    @GetMapping("/campaign/{campaignUrl}")
     public ResponseEntity getCampaign(@PathVariable String campaignUrl) throws NotFoundException {
         return new ResponseEntity(this.campaignService.getCampaign(campaignUrl), HttpStatus.OK);
     }
 
-    @GetMapping("/search/{substring}")
+    @GetMapping("/campaign/search/{substring}")
     public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable String substring) {
         return new ResponseEntity(this.campaignService.searchCampaigns(substring, Status.valueOf("A")), HttpStatus.OK);
     }
 
-    @GetMapping("/search/{substring}/{status}")
+    @GetMapping("/campaign/search/{substring}/{status}")
     public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable("substring") String substring,
                                                           @PathVariable("status") String status) {
         return new ResponseEntity(this.campaignService.searchCampaigns(substring, Status.valueOf(status)), HttpStatus.OK);
     }
 
-    @PutMapping("/{campaignUrl}/closeCampaign")
+    @PutMapping("/campaign/{campaignUrl}/closeCampaign")
     public ResponseEntity closeCampaign(@RequestHeader("Authorization") String token,
                                         @PathVariable("campaignUrl") String campaignUrl)
             throws ServletException, UnauthorizedException, NotFoundException {
@@ -85,7 +85,7 @@ public class CampaignController {
             throws ServletException, NotFoundException {
 
         String subject = this.jwtService.getSubjectByHeader(token);
-        comment.setOwner(this.userService.getUser(subject).get());
+        comment.setOwner(this.userService.getUserByEmail(subject).get());
         return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
     }
 
@@ -97,7 +97,7 @@ public class CampaignController {
             throws ServletException, NotFoundException {
 
         String subject = this.jwtService.getSubjectByHeader(token);
-        reply.setOwner(this.userService.getUser(subject).get());
+        reply.setOwner(this.userService.getUserByEmail(subject).get());
         return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
     }
 

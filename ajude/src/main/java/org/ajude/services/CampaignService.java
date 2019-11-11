@@ -41,7 +41,6 @@ public class CampaignService {
 
         if (!campaign.isEmpty()) {
             return campaign.get();
-
         } else {
             throw new NotFoundException("The Campaign " + urlIdentifier + " was not found");
         }

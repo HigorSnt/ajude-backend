@@ -16,7 +16,6 @@ public class AjudeApplication {
 
 		filterRegistrationBean.addUrlPatterns("/forgotPassword/*", "/campaign/*");
 
-
 		return filterRegistrationBean;
 	}
 

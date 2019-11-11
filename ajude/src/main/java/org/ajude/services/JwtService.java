@@ -29,7 +29,7 @@ public class JwtService {
     public boolean userHasPermission(String authorizationHeader, String email) throws ServletException {
         String subject = getSubjectByHeader(authorizationHeader);
 
-        Optional<User> optionalUser = this.userService.getUser(subject);
+        Optional<User> optionalUser = this.userService.getUserByEmail(subject);
 
         return optionalUser.isPresent() && optionalUser.get().getEmail().equals(email);
     }

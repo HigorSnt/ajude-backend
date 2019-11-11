@@ -1,21 +1,20 @@
 package org.ajude.dtos;
 
-public class UserNameEmail {
+public class UserProfile {
 
     private String email;
     private String firstName;
     private String lastName;
     private String username;
 
-
-    public UserNameEmail(String email, String firstName, String lastName, String username) {
+    public UserProfile(String email, String firstName, String lastName, String username) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
     }
 
-    public UserNameEmail() {
+    public UserProfile() {
     }
 
     public String getEmail() {
