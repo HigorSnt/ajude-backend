@@ -1,7 +1,7 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.ajude.exceptions.CommentNotFoundException;
+import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
 
 import javax.persistence.*;
@@ -55,13 +55,13 @@ public class Campaign {
         return comment;
     }
 
-    public Comment addCommentResponse(Long commentId, Comment reply) throws CommentNotFoundException {
+    public Comment addCommentResponse(Long commentId, Comment reply) throws NotFoundException {
         Comment comment = this.comments.stream().filter(c -> c.getId() == commentId).findAny().get();
 
         if (comment != null) {
             comment.setReply(reply);
         } else {
-            throw new CommentNotFoundException();
+            throw new NotFoundException("The comment " + commentId + " was not found.");
         }
 
         return comment;

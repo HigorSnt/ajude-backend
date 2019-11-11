@@ -82,7 +82,7 @@ public class CampaignService {
         }
     }
 
-    public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws CommentNotFoundException, NotFoundException {
+    public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws NotFoundException {
         Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
         if (!campaign.isEmpty()) {
             Campaign c = campaign.get();

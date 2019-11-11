@@ -44,8 +44,8 @@ public class CampaignController {
     }
 
     @GetMapping("/{campaignUrl}")
-    public ResponseEntity getCampaign(@PathVariable String urlIdentifier) throws NotFoundException {
-        return new ResponseEntity(this.campaignService.getCampaign(urlIdentifier), HttpStatus.OK);
+    public ResponseEntity getCampaign(@PathVariable String campaignUrl) throws NotFoundException {
+        return new ResponseEntity(this.campaignService.getCampaign(campaignUrl), HttpStatus.OK);
     }
 
     @GetMapping("/search/{substring}")
@@ -94,7 +94,7 @@ public class CampaignController {
                                                       @PathVariable("campaignUrl") String campaign,
                                                       @PathVariable("id") Long commentId,
                                                       @RequestHeader("Authorization") String token)
-            throws ServletException, CommentNotFoundException, NotFoundException {
+            throws ServletException, NotFoundException {
 
         String subject = this.jwtService.getSubjectByHeader(token);
         reply.setOwner(this.userService.getUser(subject).get());

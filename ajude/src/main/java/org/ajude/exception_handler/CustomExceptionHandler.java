@@ -41,14 +41,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity(error, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(CommentNotFoundException.class)
-    public final ResponseEntity handleCommentException(Exception ex, WebRequest request){
-        List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("COMMENT NOT EXISTS", details, HttpStatus.NOT_FOUND);
-        return new ResponseEntity(error, HttpStatus.NOT_FOUND);
-    }
-
     @ExceptionHandler({InvalidDateException.class, InvalidGoalException.class})
     public final ResponseEntity handleInvalidArgsException(Exception ex, WebRequest request){
         List<String> details = new ArrayList<>();

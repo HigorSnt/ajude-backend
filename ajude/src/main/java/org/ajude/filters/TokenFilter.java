@@ -34,7 +34,6 @@ public class TokenFilter extends GenericFilterBean {
                 MalformedJwtException | PrematureJwtException |
                 UnsupportedJwtException | IllegalArgumentException e) {
 
-            System.out.println("Talvez aqui");
             ((HttpServletResponse) servletResponse).sendError(
                     HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;

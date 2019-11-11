@@ -14,8 +14,8 @@ public class AjudeApplication {
 		FilterRegistrationBean<TokenFilter> filterRegistrationBean = new FilterRegistrationBean<>();
 		filterRegistrationBean.setFilter(new TokenFilter());
 
-		filterRegistrationBean.addUrlPatterns("/forgotPassword/*",
-									    	  "/campaign/*");
+		filterRegistrationBean.addUrlPatterns("/forgotPassword/*", "/campaign/*");
+
 
 		return filterRegistrationBean;
 	}
