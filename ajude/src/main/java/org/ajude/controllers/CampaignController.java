@@ -1,5 +1,6 @@
 package org.ajude.controllers;
 
+import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.entities.Campaign;
@@ -110,5 +111,22 @@ public class CampaignController {
         String userEmail = this.jwtService.getSubjectByHeader(token);
         return new ResponseEntity(this.campaignService.setGoal(campaignUrl, newGoal, userEmail), HttpStatus.OK);
     }
+
+
+    @DeleteMapping("/{campaignUrl}/comment")
+    public ResponseEntity deleteComment(@RequestHeader("Authorization") String header,
+                                        @RequestBody CampaignComment campaignComment) {
+        try {
+            String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
+
+            if (jwtService.userHasPermission(header, email))
+                return new ResponseEntity<Campaign>(campaignService.deleteComment(userService.getUser(email).get(), campaignComment), HttpStatus.OK);
+
+        } catch (ServletException | UnauthorizedException e) {
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    }
+
 }
 

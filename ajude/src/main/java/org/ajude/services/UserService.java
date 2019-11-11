@@ -39,7 +39,7 @@ public class UserService {
 
             return userNameEmail;
         } else {
-            throw new EmailAlreadyRegisteredException("Alredy exist a user with this email");
+            throw new EmailAlreadyRegisteredException("Alredy exist an user with this email");
         }
     }
 
@@ -60,9 +60,4 @@ public class UserService {
         }
     }
 
-    public void deleteComment(User user, String idComment) {
-        //user.deleteComment(idComment);
-
-        this.userRepository.save(user);
-    }
 }
