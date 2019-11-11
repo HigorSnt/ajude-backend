@@ -1,6 +1,6 @@
 package org.ajude.repositories;
 
-import org.ajude.entities.users.User;
+import org.ajude.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

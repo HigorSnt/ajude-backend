@@ -6,27 +6,39 @@
     <title>Seja bem-vindo ao AJuDE</title>
 </head>
 
-<body style="font-family: Trebuchet MS, sans-serif; text-align: center;">
+<body style="text-align: center;">
 
-    <table style="border-collapse: collapse; width: 85%; margin: 0 auto; ">
-        <tr style="font-size: 30px;">
-            <td style="background-color: #4682B4">
-                <h1 style="color: #F0FFFF;">AJuDE</h1>
+    <table style="border-collapse: collapse; margin: 0 auto; width: 700px">
+        <tr>
+            <td style="background-color: #CBE1F2; height: 200px;">
+                <img src="../static/images/ajude.png" th:src="'cid:' + ${ajude}" width="280" height="100">
             </td>
         </tr>
 
-        <tr style="font-size: 20px;">
-            <td style="background-color: #F0FFFF;">
-                <p th:text="${text}">Seja bem-vindo!</p>
-                <p th:text = "${'Parabéns, ' + name}"></p>
-                <p>Você agora está cadastrado no nosso sistema!</p>
+        <tr style="font-size: 25px;">
+            <td style="background-color: white;">
+                <p th:text = "'Olá, ' + ${name}"></p>
+                <br>
+                <p>
+                    Seja bem vindo ao AJuDE, e estamos felizes por você <br>
+                    escolher doar esperanças junto com a nossa equipe!
+                </p>
             </td>
         </tr>
 
-        <tr style="font-size: 15px; background-color: #4682B4;">
-            <td>
-                <p th:text="${date}">Teste</p>
-                <p th:text="${location}"></p>
+        <tr style="background-color: #CBE1F2; font-size: 20px">
+            <td style="float: left; position: relative; margin: 70px 100px">
+                <img src="../static/images/facebook.png" th:src="'cid:' + ${facebook}" width="280" height="100" style="width: 30px; height: 30px; float: left; margin: 15px 0">
+                <p style="width: 80px; float: left; margin: 17px 0;">
+                    /ajude
+                </p>
+            </td>
+
+            <td style="float: left; position: relative; margin: 70px 130px">
+                <img src="../static/images/instagram.png" th:src="'cid:' + ${instagram}" width="280" height="100" style="width: 30px; height: 30px; float: left; margin: 15px 0">
+                <p style="width: 80px; float: left; margin: 15px 0;">
+                    @ajude
+                </p>
             </td>
         </tr>
     </table>

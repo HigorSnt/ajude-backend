@@ -1,4 +1,4 @@
-package org.ajude.entities.mails;
+package org.ajude.entities;
 
 import java.util.Map;
 
@@ -6,25 +6,15 @@ public class Mail {
 
     private String to;
     private String subject;
-    private String text;
     private Map<String, Object> model;
 
     public Mail() {
     }
 
-    public Mail(String to, String subject, String text, Map<String, Object> model) {
+    public Mail(String to, String subject, Map<String, Object> model) {
         this.to = to;
         this.subject = subject;
-        this.text = text;
         this.model = model;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 
     public String getTo() {

@@ -1,7 +1,6 @@
 package org.ajude.filters;
 
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -14,21 +13,17 @@ import java.io.IOException;
 
 public class TokenFilter extends GenericFilterBean {
 
-    private final Integer TOKEN_INDEX = 7;
-
-    @Value("${jwt.key}")
-    private String KEY;
+    private final String KEY = "!GFLWasIzyuc4K0Ge7vQxqj^RHqaxr3%&sp5C%XX852#Ym@kVb";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
 
+
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         String header = request.getHeader("Authorization");
-
         validateHeader(header);
-
-        String token = header.substring(TOKEN_INDEX);
+        String token = header.substring(7);
 
         try {
             Jwts.parser()
@@ -41,12 +36,13 @@ public class TokenFilter extends GenericFilterBean {
 
             ((HttpServletResponse) servletResponse).sendError(
                     HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            return;
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    public void validateHeader (String header) throws ServletException {
+    public void validateHeader(String header) throws ServletException {
         if (header == null || !header.startsWith("Bearer ")) {
             throw new ServletException("MISSING OR BADLY FORMED TOKEN");
         }
