@@ -3,6 +3,7 @@ package org.ajude.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 public class Comment {
@@ -11,10 +12,11 @@ public class Comment {
     @GeneratedValue
     private Long id;
     private String comment;
+    private boolean isDeleted;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    private Comment reply;
+    private Optional<Comment> reply;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -26,8 +28,9 @@ public class Comment {
     public Comment(Long id, String comment, Comment reply, User owner) {
         this.id = id;
         this.comment = comment;
-        this.reply = reply;
+        this.reply = Optional.ofNullable(reply);
         this.owner = owner;
+        this.isDeleted = false;
     }
 
     public Long getId() {
@@ -46,13 +49,15 @@ public class Comment {
         this.comment = comment;
     }
 
-    public Comment getReply() {
+    public Optional<Comment> getReply() {
         return reply;
     }
 
     public void setReply(Comment reply) {
-        this.reply = reply;
+        this.reply = Optional.ofNullable(reply);
     }
+
+    public void delete(){this.isDeleted = true;}
 
     public User getOwner() {
         return owner;
@@ -60,5 +65,16 @@ public class Comment {
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public int recursiveDelete(Long idComment)
+    {
+        if(this.id.equals(idComment))
+        {
+            this.delete();
+            return 1;
+        }
+        else if (this.reply.isPresent()) reply.get().recursiveDelete(idComment);
+        return 0;
     }
 }

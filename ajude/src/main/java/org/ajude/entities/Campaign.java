@@ -9,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Campaign {
@@ -133,6 +134,12 @@ public class Campaign {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public void deleteComment(Long idComment)
+    {
+        for(Comment comment : comments)
+            if(comment.recursiveDelete(idComment) == 1) break;
     }
 
     public void setComments(List<Comment> comments) {

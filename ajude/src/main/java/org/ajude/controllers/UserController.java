@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.ServletException;
 import javax.validation.Valid;
 
 @RestController
@@ -28,8 +29,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserNameEmail> createUser(@RequestBody User user)
-            throws EmailAlreadyRegisteredException, MessagingException {
+    public ResponseEntity<UserNameEmail> createUser(@RequestBody User user) throws EmailAlreadyRegisteredException, MessagingException {
 
         return new ResponseEntity<>(this.userService.createUser(user), HttpStatus.CREATED);
     }
@@ -38,20 +38,5 @@ public class UserController {
     public ResponseEntity<UserProfile> getUser(@PathVariable String username) throws NotFoundException {
         return new ResponseEntity(this.userService.getUserByUsername(username), HttpStatus.OK);
     }
-
-    /*@DeleteMapping
-    public ResponseEntity deleteComment(@RequestHeader("Authorization") String header,
-                                        @RequestBody String idComment){
-
-        try{
-            String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
-
-            if(jwtService.userHasPermission(header, email))
-                userService.deleteComment(userService.getUserByEmail(email).get(), idComment);
-
-        } catch (ServletException e) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-
-    }*/
 }
+

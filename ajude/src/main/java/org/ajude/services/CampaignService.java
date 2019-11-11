@@ -1,9 +1,11 @@
 package org.ajude.services;
 
+import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
+import org.ajude.entities.User;
 import org.ajude.exceptions.*;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
@@ -135,5 +137,14 @@ public class CampaignService {
         if (!campaign.getOwner().getEmail().equals(userEmail)) {
             throw new UnauthorizedException("User is not the owner of this campaign");
         }
+    }
+
+    public Campaign deleteComment(User owner, CampaignComment campaignComment) throws UnauthorizedException
+    {
+        Campaign campaign = campaignRepository.getOne(campaignComment.getIdCampaign());
+        verifyIfIsOwner(owner.getEmail(), campaign);
+        campaign.deleteComment(campaignComment.getIdComment());
+        campaignRepository.save(campaign);
+        return campaign;
     }
 }
