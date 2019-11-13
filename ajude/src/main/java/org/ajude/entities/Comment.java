@@ -3,7 +3,6 @@ package org.ajude.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.util.Optional;
 
 @Entity
 public class Comment {
@@ -81,7 +80,7 @@ public class Comment {
         if (this.id.equals(idComment)) {
             this.delete();
             return 1;
-        } else if (this.reply.isPresent()) reply.get().recursiveDelete(idComment);
+        } else if (this.reply != null) reply.recursiveDelete(idComment);
         return 0;
     }
 }

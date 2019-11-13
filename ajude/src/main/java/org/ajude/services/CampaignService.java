@@ -1,6 +1,5 @@
 package org.ajude.services;
 
-import org.ajude.controllers.CampaignController;
 import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
@@ -13,7 +12,6 @@ import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,9 +21,10 @@ import java.util.Optional;
 
 @Service
 public class CampaignService {
-    @Autowired
+
     private CampaignRepository<Campaign, Long> campaignRepository;
 
+    @Autowired
     public CampaignService(CampaignRepository<Campaign, Long> campaignRepository) {
         this.campaignRepository = campaignRepository;
     }
@@ -147,7 +146,8 @@ public class CampaignService {
         Campaign campaign = campaignRepository.getOne(campaignComment.getIdCampaign());
         verifyIfIsOwner(owner.getEmail(), campaign);
         campaign.deleteComment(campaignComment.getIdComment());
-        campaignRepository.save(campaign);
+        this.campaignRepository.save(campaign);
+
         return campaign;
     }
 
