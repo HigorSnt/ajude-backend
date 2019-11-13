@@ -120,7 +120,7 @@ public class CampaignController {
             String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
 
             if (jwtService.userHasPermission(header, email))
-                return new ResponseEntity<Campaign>(campaignService.deleteComment(userService.getUser(email).get(), campaignComment), HttpStatus.OK);
+                return new ResponseEntity<Campaign>(campaignService.deleteComment(userService.getUserByEmail(email).get(), campaignComment), HttpStatus.OK);
 
         } catch (ServletException | UnauthorizedException e) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
