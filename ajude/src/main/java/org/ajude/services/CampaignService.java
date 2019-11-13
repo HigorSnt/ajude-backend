@@ -1,8 +1,10 @@
 package org.ajude.services;
 
+import org.ajude.controllers.CampaignController;
 import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
+import org.ajude.dtos.CampaignHome;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
 import org.ajude.entities.User;
@@ -11,6 +13,7 @@ import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -146,5 +149,9 @@ public class CampaignService {
         campaign.deleteComment(campaignComment.getIdComment());
         campaignRepository.save(campaign);
         return campaign;
+    }
+
+    public List<CampaignHome> getCampaignHome() {
+        return new ArrayList();
     }
 }

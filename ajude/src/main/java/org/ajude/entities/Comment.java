@@ -16,7 +16,7 @@ public class Comment {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    private Optional<Comment> reply;
+    private Comment reply;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -28,7 +28,7 @@ public class Comment {
     public Comment(Long id, String comment, Comment reply, User owner) {
         this.id = id;
         this.comment = comment;
-        this.reply = Optional.ofNullable(reply);
+        this.reply = reply;
         this.owner = owner;
         this.isDeleted = false;
     }
@@ -49,15 +49,25 @@ public class Comment {
         this.comment = comment;
     }
 
-    public Optional<Comment> getReply() {
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Comment getReply() {
         return reply;
     }
 
     public void setReply(Comment reply) {
-        this.reply = Optional.ofNullable(reply);
+        this.reply = reply;
     }
 
-    public void delete(){this.isDeleted = true;}
+    public void delete() {
+        this.isDeleted = true;
+    }
 
     public User getOwner() {
         return owner;
@@ -67,14 +77,11 @@ public class Comment {
         this.owner = owner;
     }
 
-    public int recursiveDelete(Long idComment)
-    {
-        if(this.id.equals(idComment))
-        {
+    public int recursiveDelete(Long idComment) {
+        if (this.id.equals(idComment)) {
             this.delete();
             return 1;
-        }
-        else if (this.reply.isPresent()) reply.get().recursiveDelete(idComment);
+        } else if (this.reply.isPresent()) reply.get().recursiveDelete(idComment);
         return 0;
     }
 }

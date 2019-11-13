@@ -3,6 +3,7 @@ package org.ajude.controllers;
 import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
+import org.ajude.dtos.CampaignHome;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
 import org.ajude.exceptions.*;
@@ -20,7 +21,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
 public class CampaignController {
 
     private CampaignService campaignService;
@@ -34,9 +34,14 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
+    @GetMapping("/home")
+    public ResponseEntity<List<CampaignHome>> getCampaignHome() {
+        return new ResponseEntity(this.campaignService.getCampaignHome(), HttpStatus.OK);
+    }
+
     @PostMapping("/campaign/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String token,
-                                           @Valid @RequestBody Campaign campaign)
+                                           @RequestBody Campaign campaign)
             throws ServletException, InvalidGoalException, InvalidDateException {
 
         String userEmail = this.jwtService.getSubjectByHeader(token);
@@ -69,7 +74,7 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.closeCampaign(campaignUrl, userEmail), HttpStatus.OK);
     }
 
-    @PutMapping("/{campaignUrl}/setDeadline")
+    @PutMapping("/campaign/{campaignUrl}/setDeadline")
     public ResponseEntity setDeadline(@RequestHeader("Authorization") String token,
                                       @PathVariable("campaignUrl") String campaignUrl,
                                       @RequestBody CampaignDeadline newDeadline)
@@ -79,7 +84,7 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.setDeadline(campaignUrl, newDeadline, userEmail),HttpStatus.OK);
     }
 
-    @PostMapping("{campaignUrl}/comment/")
+    @PostMapping("/campaign/{campaignUrl}/comment/")
     public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
                                                       @PathVariable("campaignUrl") String campaign,
                                                       @RequestHeader("Authorization") String token)
@@ -90,7 +95,7 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
     }
 
-    @PostMapping("{campaignUrl}/comment/{id}")
+    @PostMapping("/campaign/{campaignUrl}/comment/{id}")
     public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
                                                       @PathVariable("campaignUrl") String campaign,
                                                       @PathVariable("id") Long commentId,
@@ -102,7 +107,7 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
     }
 
-    @PutMapping("/{campaignUrl}/setGoal")
+    @PutMapping("/campaign/{campaignUrl}/setGoal")
     public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
                                       @PathVariable("campaignUrl") String campaignUrl,
                                       @RequestBody CampaignGoal newGoal)
@@ -113,14 +118,14 @@ public class CampaignController {
     }
 
 
-    @DeleteMapping("/{campaignUrl}/comment")
+    @DeleteMapping("/campaign/{campaignUrl}/comment")
     public ResponseEntity deleteComment(@RequestHeader("Authorization") String header,
                                         @RequestBody CampaignComment campaignComment) {
         try {
             String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
 
             if (jwtService.userHasPermission(header, email))
-                return new ResponseEntity<Campaign>(campaignService.deleteComment(userService.getUser(email).get(), campaignComment), HttpStatus.OK);
+                return new ResponseEntity<Campaign>(campaignService.deleteComment(userService.getUserByEmail(email).get(), campaignComment), HttpStatus.OK);
 
         } catch (ServletException | UnauthorizedException e) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
