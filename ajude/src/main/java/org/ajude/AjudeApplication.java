@@ -9,18 +9,18 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class AjudeApplication {
 
-	@Bean
-	public FilterRegistrationBean<TokenFilter> filterJwt() {
-		FilterRegistrationBean<TokenFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-		filterRegistrationBean.setFilter(new TokenFilter());
+    @Bean
+    public FilterRegistrationBean<TokenFilter> filterJwt() {
+        FilterRegistrationBean<TokenFilter> filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(new TokenFilter());
 
-		filterRegistrationBean.addUrlPatterns("/forgotPassword/*", "/campaign/*");
+        filterRegistrationBean.addUrlPatterns("/forgotPassword/*", "/campaign/*");
 
-		return filterRegistrationBean;
-	}
+        return filterRegistrationBean;
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(AjudeApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AjudeApplication.class, args);
+    }
 
 }

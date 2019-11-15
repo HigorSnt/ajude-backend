@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
-import javax.servlet.ServletException;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
@@ -30,7 +28,6 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserNameEmail> createUser(@RequestBody User user) throws EmailAlreadyRegisteredException, MessagingException {
-
         return new ResponseEntity<>(this.userService.createUser(user), HttpStatus.CREATED);
     }
 
