@@ -5,8 +5,10 @@ import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.CampaignHome;
 import org.ajude.entities.Campaign;
-import org.ajude.entities.Comment;
-import org.ajude.exceptions.*;
+import org.ajude.exceptions.InvalidDateException;
+import org.ajude.exceptions.InvalidGoalException;
+import org.ajude.exceptions.NotFoundException;
+import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
@@ -17,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -81,36 +82,13 @@ public class CampaignController {
             throws InvalidDateException, UnauthorizedException, NotFoundException, ServletException {
 
         String userEmail = this.jwtService.getSubjectByHeader(token);
-        return new ResponseEntity(this.campaignService.setDeadline(campaignUrl, newDeadline, userEmail),HttpStatus.OK);
-    }
-
-    @PostMapping("/campaign/{campaignUrl}/comment/")
-    public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
-                                                      @PathVariable("campaignUrl") String campaign,
-                                                      @RequestHeader("Authorization") String token)
-            throws ServletException, NotFoundException {
-
-        String subject = this.jwtService.getSubjectByHeader(token);
-        comment.setOwner(this.userService.getUserByEmail(subject).get());
-        return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
-    }
-
-    @PostMapping("/campaign/{campaignUrl}/comment/{id}")
-    public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
-                                                      @PathVariable("campaignUrl") String campaign,
-                                                      @PathVariable("id") Long commentId,
-                                                      @RequestHeader("Authorization") String token)
-            throws ServletException, NotFoundException {
-
-        String subject = this.jwtService.getSubjectByHeader(token);
-        reply.setOwner(this.userService.getUserByEmail(subject).get());
-        return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.setDeadline(campaignUrl, newDeadline, userEmail), HttpStatus.OK);
     }
 
     @PutMapping("/campaign/{campaignUrl}/setGoal")
     public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
-                                      @PathVariable("campaignUrl") String campaignUrl,
-                                      @RequestBody CampaignGoal newGoal)
+                                  @PathVariable("campaignUrl") String campaignUrl,
+                                  @RequestBody CampaignGoal newGoal)
             throws ServletException, UnauthorizedException, InvalidDateException, NotFoundException, InvalidGoalException {
 
         String userEmail = this.jwtService.getSubjectByHeader(token);

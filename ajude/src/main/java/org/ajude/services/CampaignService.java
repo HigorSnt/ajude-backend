@@ -7,7 +7,10 @@ import org.ajude.dtos.CampaignHome;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
 import org.ajude.entities.User;
-import org.ajude.exceptions.*;
+import org.ajude.exceptions.InvalidDateException;
+import org.ajude.exceptions.InvalidGoalException;
+import org.ajude.exceptions.NotFoundException;
+import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +68,7 @@ public class CampaignService {
 
         if (campaign.getStatus().equals(Status.A)) {
             campaign.setStatus(Status.C);
-            campaignRepository.saveAndFlush(campaign);
+            this.campaignRepository.saveAndFlush(campaign);
         }
 
         return campaign;
@@ -73,12 +76,14 @@ public class CampaignService {
 
     public Comment addCampaignComment(String campaignUrl, Comment comment) throws NotFoundException {
 
-        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
-        if (!campaign.isEmpty()) {
-            Campaign c = campaign.get();
-            Comment com = c.addComment(comment);
-            this.campaignRepository.save(c);
-            return com;
+        Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+        if (!campaignOptional.isEmpty()) {
+            Campaign campaign = campaignOptional.get();
+            campaign.addComment(comment);
+
+            campaign = this.campaignRepository.save(campaign);
+
+            return campaign.getLastCommentAdded();
 
         } else {
             throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
@@ -86,12 +91,14 @@ public class CampaignService {
     }
 
     public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws NotFoundException {
-        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
-        if (!campaign.isEmpty()) {
-            Campaign c = campaign.get();
-            Comment com = c.addCommentResponse(commentId, reply);
-            this.campaignRepository.save(c);
-            return com;
+        Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+        if (!campaignOptional.isEmpty()) {
+            Campaign campaign = campaignOptional.get();
+            campaign.addCommentResponse(commentId, reply);
+
+            campaign = this.campaignRepository.save(campaign);
+
+            return campaign.getLastCommentAdded();
         } else {
             throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
         }
@@ -141,8 +148,7 @@ public class CampaignService {
         }
     }
 
-    public Campaign deleteComment(User owner, CampaignComment campaignComment) throws UnauthorizedException
-    {
+    public Campaign deleteComment(User owner, CampaignComment campaignComment) throws UnauthorizedException {
         Campaign campaign = campaignRepository.getOne(campaignComment.getIdCampaign());
         verifyIfIsOwner(owner.getEmail(), campaign);
         campaign.deleteComment(campaignComment.getIdComment());

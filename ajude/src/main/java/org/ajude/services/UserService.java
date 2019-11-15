@@ -1,8 +1,8 @@
 package org.ajude.services;
 
+import org.ajude.dtos.UserNameEmail;
 import org.ajude.dtos.UserProfile;
 import org.ajude.entities.User;
-import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.repositories.UserRepository;
@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.text.Normalizer;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -43,7 +45,8 @@ public class UserService {
         if (getUserByEmail(user.getEmail()).isEmpty()) {
             this.emailService.sendWelcomeEmail(user.getEmail(), user.getFirstName());
 
-            user.setUsername(user.getFirstName() + "." + user.getLastName() + "." + user.hashCode());
+            user.setUsername(this.createUsername(user.getFirstName().toLowerCase(), user.getLastName().toLowerCase()) +
+                    "." + Math.abs(user.hashCode()));
 
             this.userRepository.save(user);
             UserNameEmail userNameEmail = new UserNameEmail(
@@ -74,6 +77,17 @@ public class UserService {
             user.setPassword(newPassword);
             this.userRepository.save(user);
         }
+    }
+
+    private String createUsername(String firstName, String lastName) {
+        String normalizedFirstName = Normalizer.normalize(firstName, Normalizer.Form.NFD);
+        String normalizedLastName = Normalizer.normalize(lastName, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+
+        String username = pattern.matcher(normalizedFirstName).replaceAll("") +
+                "." + pattern.matcher(normalizedLastName).replaceAll("");
+
+        return username;
     }
 
 }

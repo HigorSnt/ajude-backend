@@ -7,7 +7,8 @@ public class CampaignGoal {
         Goal = goal;
     }
 
-    public CampaignGoal(){}
+    public CampaignGoal() {
+    }
 
     public double getGoal() {
         return Goal;

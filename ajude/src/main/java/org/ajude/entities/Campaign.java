@@ -6,10 +6,8 @@ import org.ajude.utils.Status;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Campaign {
@@ -31,7 +29,7 @@ public class Campaign {
     @JsonIgnore
     private User owner;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> comments;
 
@@ -136,10 +134,13 @@ public class Campaign {
         return comments;
     }
 
-    public void deleteComment(Long idComment)
-    {
-        for(Comment comment : comments)
-            if(comment.recursiveDelete(idComment) == 1) break;
+    public Comment getLastCommentAdded() {
+        return this.comments.get(this.comments.size() - 1);
+    }
+
+    public void deleteComment(Long idComment) {
+        for (Comment comment : comments)
+            if (comment.recursiveDelete(idComment) == 1) break;
     }
 
     public void setComments(List<Comment> comments) {
