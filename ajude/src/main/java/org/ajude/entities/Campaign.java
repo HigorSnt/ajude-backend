@@ -23,6 +23,7 @@ public class Campaign {
     private Date deadline;
     private Status status;
     private Double goal;
+    private Double remaining;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "idUser")
@@ -33,16 +34,21 @@ public class Campaign {
     @JsonIgnore
     private List<Comment> comments;
 
+    private List<Donation> donations;
+
     public Campaign(String shortName, String urlIdentifier, String description,
-                    Date deadline, Status status, Double goal, User owner, List<Comment> comments) {
+                    Date deadline, Status status, Double goal, User owner,
+                    List<Comment> comments, List<Donation> donations) {
         this.shortName = shortName;
         this.urlIdentifier = urlIdentifier;
         this.description = description;
         this.deadline = deadline;
         this.status = status;
         this.goal = goal;
+        this.remaining = goal;
         this.owner = owner;
         this.comments = comments;
+        this.donations = donations;
     }
 
     public Campaign() {
@@ -130,6 +136,18 @@ public class Campaign {
         this.owner = owner;
     }
 
+    private void setRemaining()
+    {
+        Double sum = 0.0;
+        for(Donation d : donations) sum += d.getValue();
+        this.remaining = goal - sum;
+    }
+
+    public Double getRemaining(){
+        setRemaining();
+        return remaining;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
@@ -145,6 +163,11 @@ public class Campaign {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public void addDonation (Donation donation) {
+        donations.add(donation);
+        setRemaining();
     }
 
     @Override

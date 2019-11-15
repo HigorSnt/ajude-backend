@@ -4,7 +4,11 @@ import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.CampaignHome;
+import org.ajude.dtos.DonationDateValue;
 import org.ajude.entities.Campaign;
+import org.ajude.entities.Comment;
+import org.ajude.entities.Donation;
+import org.ajude.exceptions.*;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
 import org.ajude.exceptions.NotFoundException;
@@ -19,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -35,14 +40,9 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/home")
-    public ResponseEntity<List<CampaignHome>> getCampaignHome() {
-        return new ResponseEntity(this.campaignService.getCampaignHome(), HttpStatus.OK);
-    }
-
     @PostMapping("/campaign/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String token,
-                                           @RequestBody Campaign campaign)
+                                           @Valid @RequestBody Campaign campaign)
             throws ServletException, InvalidGoalException, InvalidDateException {
 
         String userEmail = this.jwtService.getSubjectByHeader(token);
@@ -86,6 +86,30 @@ public class CampaignController {
     }
 
     @PutMapping("/campaign/{campaignUrl}/setGoal")
+    @PostMapping("{campaignUrl}/comment/")
+    public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
+                                                      @PathVariable("campaignUrl") String campaign,
+                                                      @RequestHeader("Authorization") String token)
+            throws ServletException, NotFoundException {
+
+        String subject = this.jwtService.getSubjectByHeader(token);
+        comment.setOwner(this.userService.getUserByEmail(subject).get());
+        return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
+    }
+
+    @PostMapping("{campaignUrl}/comment/{id}")
+    public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
+                                                      @PathVariable("campaignUrl") String campaign,
+                                                      @PathVariable("id") Long commentId,
+                                                      @RequestHeader("Authorization") String token)
+            throws ServletException, NotFoundException {
+
+        String subject = this.jwtService.getSubjectByHeader(token);
+        reply.setOwner(this.userService.getUserByEmail(subject).get());
+        return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
+    }
+
+    @PutMapping("/{campaignUrl}/setGoal")
     public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
                                   @PathVariable("campaignUrl") String campaignUrl,
                                   @RequestBody CampaignGoal newGoal)
@@ -109,6 +133,16 @@ public class CampaignController {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
         return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @PostMapping("/{campaignUrl}/donate")
+    public ResponseEntity<Campaign> donate(@RequestHeader("Authorization") String header,
+                                           @PathVariable("campaignUrl") String campaignUrl,
+                                           @RequestBody DonationDateValue donationDTO) throws ServletException, NotFoundException
+    {
+        String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
+
+        return new ResponseEntity<Campaign>(this.campaignService.donate(campaignUrl, userService.getUserByEmail(email).get(), donationDTO), HttpStatus.OK);
     }
 
 }
