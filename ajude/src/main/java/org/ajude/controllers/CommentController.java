@@ -26,7 +26,7 @@ public class CommentController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/campaign/{campaignUrl}/comment/")
+    @PostMapping("/campaign/{campaignUrl}/comment")
     public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
                                                       @PathVariable("campaignUrl") String campaign,
                                                       @RequestHeader("Authorization") String token)
