@@ -76,11 +76,11 @@ public class Comment {
         this.owner = owner;
     }
 
-    public int recursiveDelete(Long idComment) {
-        if (this.id.equals(idComment)) {
+    public int recursiveDelete(User owner, Long idComment) {
+        if (this.id.equals(idComment) && owner.equals(this.owner)) {
             this.delete();
             return 1;
-        } else if (this.reply != null) reply.recursiveDelete(idComment);
+        } else if (this.reply != null) reply.recursiveDelete(owner, idComment);
         return 0;
     }
 }

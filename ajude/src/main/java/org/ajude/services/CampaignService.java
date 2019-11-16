@@ -1,6 +1,5 @@
 package org.ajude.services;
 
-import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.DonationDateValue;
@@ -150,10 +149,11 @@ public class CampaignService {
         }
     }
 
-    public Campaign deleteComment(User owner, CampaignComment campaignComment) throws UnauthorizedException {
-        Campaign campaign = campaignRepository.getOne(campaignComment.getIdCampaign());
-        verifyIfIsOwner(owner.getEmail(), campaign);
-        campaign.deleteComment(campaignComment.getIdComment());
+    public Campaign deleteComment(String campaignUrl, User owner, Long commentId) throws UnauthorizedException, NotFoundException
+    {
+        Campaign campaign = this.getCampaign(campaignUrl);
+
+        campaign.deleteComment(owner, commentId);
         this.campaignRepository.save(campaign);
 
         return campaign;

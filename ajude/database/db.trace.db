@@ -1,0 +1,6 @@
+2019-11-16 14:14:45 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CAMPAIGN[*]"; expected "COMMIT, CREATE, CALL, CHECKPOINT, COMMENT"; SQL statement:
+CAMPAIGN [42001-199]
+2019-11-16 14:39:46 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "DONATIONS" not found; SQL statement:
+SELECT * FROM DONATIONS [42102-199]

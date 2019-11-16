@@ -1,14 +1,10 @@
 package org.ajude.controllers;
 
-import org.ajude.dtos.CampaignComment;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
-import org.ajude.dtos.CampaignHome;
 import org.ajude.dtos.DonationDateValue;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
-import org.ajude.entities.Donation;
-import org.ajude.exceptions.*;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
 import org.ajude.exceptions.NotFoundException;
@@ -86,30 +82,6 @@ public class CampaignController {
     }
 
     @PutMapping("/campaign/{campaignUrl}/setGoal")
-    @PostMapping("{campaignUrl}/comment/")
-    public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
-                                                      @PathVariable("campaignUrl") String campaign,
-                                                      @RequestHeader("Authorization") String token)
-            throws ServletException, NotFoundException {
-
-        String subject = this.jwtService.getSubjectByHeader(token);
-        comment.setOwner(this.userService.getUserByEmail(subject).get());
-        return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
-    }
-
-    @PostMapping("{campaignUrl}/comment/{id}")
-    public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
-                                                      @PathVariable("campaignUrl") String campaign,
-                                                      @PathVariable("id") Long commentId,
-                                                      @RequestHeader("Authorization") String token)
-            throws ServletException, NotFoundException {
-
-        String subject = this.jwtService.getSubjectByHeader(token);
-        reply.setOwner(this.userService.getUserByEmail(subject).get());
-        return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
-    }
-
-    @PutMapping("/{campaignUrl}/setGoal")
     public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
                                   @PathVariable("campaignUrl") String campaignUrl,
                                   @RequestBody CampaignGoal newGoal)
@@ -120,30 +92,13 @@ public class CampaignController {
     }
 
 
-    @DeleteMapping("/campaign/{campaignUrl}/comment")
-    public ResponseEntity deleteComment(@RequestHeader("Authorization") String header,
-                                        @RequestBody CampaignComment campaignComment) {
-        try {
-            String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
-
-            if (jwtService.userHasPermission(header, email))
-                return new ResponseEntity<Campaign>(campaignService.deleteComment(userService.getUserByEmail(email).get(), campaignComment), HttpStatus.OK);
-
-        } catch (ServletException | UnauthorizedException e) {
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity(HttpStatus.NOT_IMPLEMENTED);
-    }
-
-    @PostMapping("/{campaignUrl}/donate")
+    @PostMapping("/campaign/{campaignUrl}/donate")
     public ResponseEntity<Campaign> donate(@RequestHeader("Authorization") String header,
                                            @PathVariable("campaignUrl") String campaignUrl,
-                                           @RequestBody DonationDateValue donationDTO) throws ServletException, NotFoundException
-    {
-        String email = jwtService.getSubjectByToken(jwtService.getSubjectByHeader(header));
+                                           @RequestBody DonationDateValue donationDTO) throws ServletException, NotFoundException {
+        String email = jwtService.getSubjectByHeader(header);
 
-        return new ResponseEntity<Campaign>(this.campaignService.donate(campaignUrl, userService.getUserByEmail(email).get(), donationDTO), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.donate(campaignUrl, userService.getUserByEmail(email).get(), donationDTO), HttpStatus.OK);
     }
-
 }
 
