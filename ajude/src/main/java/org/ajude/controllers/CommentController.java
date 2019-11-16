@@ -31,10 +31,10 @@ public class CommentController {
     @PostMapping("/campaign/{campaignUrl}/comment")
     public ResponseEntity<Comment> addCampaignComment(@RequestBody Comment comment,
                                                       @PathVariable("campaignUrl") String campaign,
-                                                      @RequestHeader("Authorization") String token)
+                                                      @RequestHeader("Authorization") String header)
             throws ServletException, NotFoundException {
 
-        String subject = this.jwtService.getSubjectByHeader(token);
+        String subject = this.jwtService.getSubjectByHeader(header);
         comment.setOwner(this.userService.getUserByEmail(subject).get());
         return new ResponseEntity(this.campaignService.addCampaignComment(campaign, comment), HttpStatus.OK);
     }
@@ -43,10 +43,10 @@ public class CommentController {
     public ResponseEntity<Comment> addCommentResponse(@RequestBody Comment reply,
                                                       @PathVariable("campaignUrl") String campaign,
                                                       @PathVariable("id") Long commentId,
-                                                      @RequestHeader("Authorization") String token)
+                                                      @RequestHeader("Authorization") String header)
             throws ServletException, NotFoundException {
 
-        String subject = this.jwtService.getSubjectByHeader(token);
+        String subject = this.jwtService.getSubjectByHeader(header);
         reply.setOwner(this.userService.getUserByEmail(subject).get());
         return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
     }
