@@ -34,6 +34,8 @@ public class Campaign {
     @JsonIgnore
     private List<Comment> comments;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Donation> donations;
 
     public Campaign(String shortName, String urlIdentifier, String description,
@@ -156,9 +158,9 @@ public class Campaign {
         return this.comments.get(this.comments.size() - 1);
     }
 
-    public void deleteComment(Long idComment) {
+    public void deleteComment(User owner, Long idComment) {
         for (Comment comment : comments)
-            if (comment.recursiveDelete(idComment) == 1) break;
+            if (comment.recursiveDelete(owner, idComment) == 1) break;
     }
 
     public void setComments(List<Comment> comments) {

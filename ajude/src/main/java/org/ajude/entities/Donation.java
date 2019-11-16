@@ -14,6 +14,7 @@ public class Donation
     private Double value;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "idUser")
     @JsonIgnore
     private User donor;
     private Date date;
