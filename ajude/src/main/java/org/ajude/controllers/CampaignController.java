@@ -37,11 +37,11 @@ public class CampaignController {
     }
 
     @PostMapping("/campaign/register")
-    public ResponseEntity registerCampaign(@RequestHeader("Authorization") String token,
+    public ResponseEntity registerCampaign(@RequestHeader("Authorization") String header,
                                            @Valid @RequestBody Campaign campaign)
             throws ServletException, InvalidGoalException, InvalidDateException {
 
-        String userEmail = this.jwtService.getSubjectByHeader(token);
+        String userEmail = this.jwtService.getSubjectByHeader(header);
         campaign.setOwner(this.userService.getUserByEmail(userEmail).get());
         return new ResponseEntity(this.campaignService.register(campaign), HttpStatus.CREATED);
     }
@@ -63,31 +63,31 @@ public class CampaignController {
     }
 
     @PutMapping("/campaign/{campaignUrl}/closeCampaign")
-    public ResponseEntity closeCampaign(@RequestHeader("Authorization") String token,
+    public ResponseEntity closeCampaign(@RequestHeader("Authorization") String header,
                                         @PathVariable("campaignUrl") String campaignUrl)
             throws ServletException, UnauthorizedException, NotFoundException {
 
-        String userEmail = this.jwtService.getSubjectByHeader(token);
+        String userEmail = this.jwtService.getSubjectByHeader(header);
         return new ResponseEntity(this.campaignService.closeCampaign(campaignUrl, userEmail), HttpStatus.OK);
     }
 
     @PutMapping("/campaign/{campaignUrl}/setDeadline")
-    public ResponseEntity setDeadline(@RequestHeader("Authorization") String token,
+    public ResponseEntity setDeadline(@RequestHeader("Authorization") String header,
                                       @PathVariable("campaignUrl") String campaignUrl,
                                       @RequestBody CampaignDeadline newDeadline)
             throws InvalidDateException, UnauthorizedException, NotFoundException, ServletException {
 
-        String userEmail = this.jwtService.getSubjectByHeader(token);
+        String userEmail = this.jwtService.getSubjectByHeader(header);
         return new ResponseEntity(this.campaignService.setDeadline(campaignUrl, newDeadline, userEmail), HttpStatus.OK);
     }
 
     @PutMapping("/campaign/{campaignUrl}/setGoal")
-    public ResponseEntity setGoal(@RequestHeader("Authorization") String token,
+    public ResponseEntity setGoal(@RequestHeader("Authorization") String header,
                                   @PathVariable("campaignUrl") String campaignUrl,
                                   @RequestBody CampaignGoal newGoal)
             throws ServletException, UnauthorizedException, InvalidDateException, NotFoundException, InvalidGoalException {
 
-        String userEmail = this.jwtService.getSubjectByHeader(token);
+        String userEmail = this.jwtService.getSubjectByHeader(header);
         return new ResponseEntity(this.campaignService.setGoal(campaignUrl, newGoal, userEmail), HttpStatus.OK);
     }
 
