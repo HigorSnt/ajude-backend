@@ -1,11 +1,15 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
 
 import javax.persistence.*;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment {
 
     @Id
@@ -21,17 +25,6 @@ public class Comment {
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
     private User owner;
-
-    public Comment() {
-    }
-
-    public Comment(Long id, String comment, Comment reply, User owner) {
-        this.id = id;
-        this.comment = comment;
-        this.reply = reply;
-        this.owner = owner;
-        this.isDeleted = false;
-    }
 
     public Long getId() {
         return id;

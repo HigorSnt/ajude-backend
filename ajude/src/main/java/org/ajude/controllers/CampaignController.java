@@ -36,10 +36,22 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/home")
-    public ResponseEntity<List<CampaignHome>> getCampaignHome() {
+    @GetMapping("/home/goal")
+    public ResponseEntity<List<CampaignHome>> getCampaignHomeByGoal() {
         //TODO
-        return new ResponseEntity(this.campaignService.getCampaignHome(), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.getCampaignHomeByGoal(), HttpStatus.OK);
+    }
+
+    @GetMapping("/home/date")
+    public ResponseEntity<List<CampaignHome>> getCampaignHomeByDate() {
+        //TODO
+        return new ResponseEntity(this.campaignService.getCampaignHomeByDate(), HttpStatus.OK);
+    }
+
+    @GetMapping("/home/like")
+    public ResponseEntity<List<CampaignHome>> getCampaignHomeByLike() {
+        //TODO
+        return new ResponseEntity(this.campaignService.getCampaignHomeByLike(), HttpStatus.OK);
     }
 
     @PostMapping("/campaign/register")

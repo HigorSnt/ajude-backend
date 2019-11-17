@@ -26,7 +26,6 @@ import java.util.Optional;
 @Service
 public class CampaignService {
 
-    @Autowired
     private CampaignRepository<Campaign, Long> campaignRepository;
 
     @Autowired
@@ -38,6 +37,8 @@ public class CampaignService {
 
         verifyDate(campaign.getDeadline());
         verifyGoal(campaign.getGoal());
+
+        campaign.setRemaining(campaign.getGoal());
         campaign.setStatus(Status.A);
         this.campaignRepository.save(campaign);
 
@@ -83,7 +84,6 @@ public class CampaignService {
         if (!campaignOptional.isEmpty()) {
             Campaign campaign = campaignOptional.get();
             campaign.addComment(comment);
-
             campaign = this.campaignRepository.save(campaign);
 
             return campaign.lastCommentAdded();
@@ -145,13 +145,17 @@ public class CampaignService {
         }
     }
 
-    private void verifyIfIsOwner(String userEmail, Campaign campaign) throws UnauthorizedException {
+    private void verifyIfIsOwner(String userEmail, Campaign campaign)
+            throws UnauthorizedException {
+
         if (!campaign.getUser().getEmail().equals(userEmail)) {
             throw new UnauthorizedException("User is not the owner of this campaign");
         }
     }
 
-    public Campaign deleteComment(String campaignUrl, User owner, Long commentId) throws UnauthorizedException, NotFoundException {
+    public Campaign deleteComment(String campaignUrl, User owner, Long commentId)
+            throws UnauthorizedException, NotFoundException {
+
         Campaign campaign = this.getCampaign(campaignUrl);
 
         campaign.deleteComment(owner, commentId);
@@ -160,16 +164,41 @@ public class CampaignService {
         return campaign;
     }
 
-    public List<CampaignHome> getCampaignHome() {
-        return new ArrayList();
-    }
+    public Campaign donate(String campaignURL, User user,
+                           DonationDateValue donationDTO) throws NotFoundException {
 
-    public Campaign donate(String campaignURL, User user, DonationDateValue donationDTO) throws NotFoundException {
         Donation donation = new Donation(donationDTO.getValue(), user, donationDTO.getDate());
         Campaign campaign = this.getCampaign(campaignURL);
 
         campaign.addDonation(donation);
         this.campaignRepository.save(campaign);
         return campaign;
+    }
+
+    public List<CampaignHome> getCampaignHomeByGoal() {
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByRemainingDesc(Status.A);
+
+        return transformCampaignsToCampaignsHome(campaigns);
+    }
+
+    public List<CampaignHome> getCampaignHomeByDate() {
+        return new ArrayList();
+    }
+
+    public List<CampaignHome> getCampaignHomeByLike() {
+        return new ArrayList();
+    }
+
+    private List<CampaignHome> transformCampaignsToCampaignsHome(List<Campaign> campaigns) {
+        List<CampaignHome> homeList = new ArrayList<>();
+
+        campaigns.forEach(campaign -> {
+            homeList.add(new CampaignHome(campaign.getShortName(),
+                    campaign.getUrlIdentifier(), campaign.getDescription(),
+                    campaign.getDeadline(), campaign.getStatus(),
+                    campaign.getGoal(), campaign.getRemaining()));
+        });
+
+        return homeList;
     }
 }

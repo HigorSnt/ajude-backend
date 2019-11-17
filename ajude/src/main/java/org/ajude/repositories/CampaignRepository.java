@@ -12,4 +12,6 @@ public interface CampaignRepository<T, Long> extends JpaRepository<Campaign, Lon
     Optional<Campaign> findByUrlIdentifier(String urlIdentifier);
 
     List<Campaign> findByShortNameContainingIgnoreCaseAndStatus(String substring, Status status);
+
+    List<Campaign> findTop5ByStatusOrderByRemainingDesc(Status status);
 }

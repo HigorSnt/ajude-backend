@@ -1,12 +1,16 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -20,20 +24,6 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Campaign> campaigns;
-
-    public User() {
-    }
-
-    public User(String email, String password, String firstName, String lastName,
-                String creditCardNumber, String username, List<Campaign> campaigns) {
-        this.email = email;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.creditCardNumber = creditCardNumber;
-        this.username = username;
-        this.campaigns = campaigns;
-    }
 
     public String getEmail() {
         return email;

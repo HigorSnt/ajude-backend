@@ -1,6 +1,8 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
@@ -11,6 +13,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Campaign {
 
     @Id
@@ -23,8 +27,8 @@ public class Campaign {
     private String description;
     private Date deadline;
     private Status status;
-    private Double goal;
-    private Double remaining;
+    private double goal;
+    private double remaining;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "idUser")
@@ -37,24 +41,6 @@ public class Campaign {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Donation> donations;
-
-    public Campaign(String shortName, String urlIdentifier, String description,
-                    Date deadline, Status status, Double goal, User owner,
-                    List<Comment> comments, List<Donation> donations) {
-        this.shortName = shortName;
-        this.urlIdentifier = urlIdentifier;
-        this.description = description;
-        this.deadline = deadline;
-        this.status = status;
-        this.goal = goal;
-        this.remaining = goal;
-        this.owner = owner;
-        this.comments = comments;
-        this.donations = donations;
-    }
-
-    public Campaign() {
-    }
 
     public Comment addComment(Comment comment) {
         this.comments.add(comment);
@@ -122,11 +108,11 @@ public class Campaign {
         this.status = status;
     }
 
-    public Double getGoal() {
+    public double getGoal() {
         return goal;
     }
 
-    public void setGoal(Double goal) {
+    public void setGoal(double goal) {
         this.goal = goal;
     }
 
@@ -153,7 +139,11 @@ public class Campaign {
         this.remaining = goal - sum;
     }
 
-    public Double getRemaining() {
+    public void setRemaining(double remaining) {
+        this.remaining = remaining;
+    }
+
+    public double getRemaining() {
         setRemaining();
         return remaining;
     }
