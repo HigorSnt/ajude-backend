@@ -3,10 +3,13 @@ package org.ajude.services;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.CampaignHome;
+import org.ajude.dtos.CampaignLikeDislike;
 import org.ajude.dtos.DonationDateValue;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
+import org.ajude.entities.Dislike;
 import org.ajude.entities.Donation;
+import org.ajude.entities.Like;
 import org.ajude.entities.User;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
@@ -15,6 +18,7 @@ import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -25,7 +29,7 @@ import java.util.Optional;
 
 @Service
 public class CampaignService {
-
+    
     @Autowired
     private CampaignRepository<Campaign, Long> campaignRepository;
 
@@ -171,5 +175,19 @@ public class CampaignService {
         campaign.addDonation(donation);
         this.campaignRepository.save(campaign);
         return campaign;
+    }
+
+    public CampaignLikeDislike addLike(String campaignUrl, Like like) throws NotFoundException {
+        Campaign campaign = this.getCampaign(campaignUrl);
+        CampaignLikeDislike campaignLikeDislike = campaign.addLike(like);
+        campaignRepository.save(campaign);
+        return campaignLikeDislike;
+    }
+
+    public CampaignLikeDislike addDislike(String campaignUrl, Dislike dislike) throws NotFoundException {
+        Campaign campaign = this.getCampaign(campaignUrl);
+        CampaignLikeDislike campaignLikeDislike = campaign.addDislike(dislike);
+        campaignRepository.save(campaign);
+        return campaignLikeDislike;
     }
 }
