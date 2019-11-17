@@ -49,6 +49,7 @@ public class UserService {
                     "." + Math.abs(user.hashCode()));
 
             this.userRepository.save(user);
+
             UserNameEmail userNameEmail = new UserNameEmail(
                     user.getEmail(),
                     user.getFirstName(),

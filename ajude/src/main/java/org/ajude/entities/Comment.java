@@ -1,6 +1,7 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.ajude.dtos.UserNameEmail;
 
 import javax.persistence.*;
 
@@ -13,11 +14,11 @@ public class Comment {
     private String comment;
     private boolean isDeleted;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL})
-    @JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER,
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL})
     private Comment reply;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
     private User owner;
 
@@ -41,7 +42,7 @@ public class Comment {
     }
 
     public String getComment() {
-        return comment;
+        return isDeleted ? "" : comment;
     }
 
     public void setComment(String comment) {
@@ -68,7 +69,16 @@ public class Comment {
         this.isDeleted = true;
     }
 
-    public User getOwner() {
+    public UserNameEmail getUser() {
+        return new UserNameEmail(
+                this.owner.getEmail(),
+                this.owner.getFirstName(),
+                this.owner.getLastName(),
+                this.owner.getUsername()
+        );
+    }
+
+    private User getOwner() {
         return owner;
     }
 

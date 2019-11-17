@@ -2,9 +2,9 @@ package org.ajude.controllers;
 
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
+import org.ajude.dtos.CampaignHome;
 import org.ajude.dtos.DonationDateValue;
 import org.ajude.entities.Campaign;
-import org.ajude.entities.Comment;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
 import org.ajude.exceptions.NotFoundException;
@@ -34,6 +34,12 @@ public class CampaignController {
         this.campaignService = campaignService;
         this.userService = userService;
         this.jwtService = jwtService;
+    }
+
+    @GetMapping("/home")
+    public ResponseEntity<List<CampaignHome>> getCampaignHome() {
+        //TODO
+        return new ResponseEntity(this.campaignService.getCampaignHome(), HttpStatus.OK);
     }
 
     @PostMapping("/campaign/register")

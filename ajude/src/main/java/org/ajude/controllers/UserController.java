@@ -19,7 +19,6 @@ import javax.mail.MessagingException;
 public class UserController {
 
     private UserService userService;
-    private JwtService jwtService;
 
     @Autowired
     public UserController(UserService userService) {

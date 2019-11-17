@@ -1,6 +1,7 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
 
@@ -31,7 +32,6 @@ public class Campaign {
     private User owner;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -130,7 +130,16 @@ public class Campaign {
         this.goal = goal;
     }
 
-    public User getOwner() {
+    public UserNameEmail getUser() {
+        return new UserNameEmail(
+                this.owner.getEmail(),
+                this.owner.getFirstName(),
+                this.owner.getLastName(),
+                this.owner.getUsername()
+        );
+    }
+
+    private User getOwner() {
         return owner;
     }
 
@@ -138,14 +147,13 @@ public class Campaign {
         this.owner = owner;
     }
 
-    private void setRemaining()
-    {
+    private void setRemaining() {
         Double sum = 0.0;
-        for(Donation d : donations) sum += d.getValue();
+        for (Donation d : donations) sum += d.getValue();
         this.remaining = goal - sum;
     }
 
-    public Double getRemaining(){
+    public Double getRemaining() {
         setRemaining();
         return remaining;
     }
@@ -154,7 +162,7 @@ public class Campaign {
         return comments;
     }
 
-    public Comment getLastCommentAdded() {
+    public Comment lastCommentAdded() {
         return this.comments.get(this.comments.size() - 1);
     }
 
@@ -167,7 +175,7 @@ public class Campaign {
         this.comments = comments;
     }
 
-    public void addDonation (Donation donation) {
+    public void addDonation(Donation donation) {
         donations.add(donation);
         setRemaining();
     }

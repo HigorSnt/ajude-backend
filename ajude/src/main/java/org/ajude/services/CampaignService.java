@@ -2,8 +2,8 @@ package org.ajude.services;
 
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
-import org.ajude.dtos.DonationDateValue;
 import org.ajude.dtos.CampaignHome;
+import org.ajude.dtos.DonationDateValue;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Comment;
 import org.ajude.entities.Donation;
@@ -25,6 +25,7 @@ import java.util.Optional;
 
 @Service
 public class CampaignService {
+
     @Autowired
     private CampaignRepository<Campaign, Long> campaignRepository;
 
@@ -55,7 +56,8 @@ public class CampaignService {
     }
 
     public List<Campaign> searchCampaigns(String substring, Status status) {
-        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring, status);
+        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring,
+                status);
 
         return campaigns;
     }
@@ -76,15 +78,15 @@ public class CampaignService {
     }
 
     public Comment addCampaignComment(String campaignUrl, Comment comment) throws NotFoundException {
-
         Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+
         if (!campaignOptional.isEmpty()) {
             Campaign campaign = campaignOptional.get();
             campaign.addComment(comment);
 
             campaign = this.campaignRepository.save(campaign);
 
-            return campaign.getLastCommentAdded();
+            return campaign.lastCommentAdded();
 
         } else {
             throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
@@ -95,11 +97,11 @@ public class CampaignService {
         Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
         if (!campaignOptional.isEmpty()) {
             Campaign campaign = campaignOptional.get();
-            campaign.addCommentResponse(commentId, reply);
+            Comment comment = campaign.addCommentResponse(commentId, reply);
 
-            campaign = this.campaignRepository.save(campaign);
+            this.campaignRepository.save(campaign);
 
-            return campaign.getLastCommentAdded();
+            return comment;
         } else {
             throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
         }
@@ -144,13 +146,12 @@ public class CampaignService {
     }
 
     private void verifyIfIsOwner(String userEmail, Campaign campaign) throws UnauthorizedException {
-        if (!campaign.getOwner().getEmail().equals(userEmail)) {
+        if (!campaign.getUser().getEmail().equals(userEmail)) {
             throw new UnauthorizedException("User is not the owner of this campaign");
         }
     }
 
-    public Campaign deleteComment(String campaignUrl, User owner, Long commentId) throws UnauthorizedException, NotFoundException
-    {
+    public Campaign deleteComment(String campaignUrl, User owner, Long commentId) throws UnauthorizedException, NotFoundException {
         Campaign campaign = this.getCampaign(campaignUrl);
 
         campaign.deleteComment(owner, commentId);
@@ -163,8 +164,7 @@ public class CampaignService {
         return new ArrayList();
     }
 
-    public Campaign donate(String campaignURL, User user, DonationDateValue donationDTO) throws NotFoundException
-    {
+    public Campaign donate(String campaignURL, User user, DonationDateValue donationDTO) throws NotFoundException {
         Donation donation = new Donation(donationDTO.getValue(), user, donationDTO.getDate());
         Campaign campaign = this.getCampaign(campaignURL);
 
