@@ -1,23 +1,25 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.ajude.dtos.CampaignLikeDislike;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Campaign {
 
     @Id
     @GeneratedValue
     private Long id;
-    @NotEmpty(message = "short name cannot be empty")
     private String shortName;
-    @NotEmpty(message = "urlIdentifier name cannot be empty")
     private String urlIdentifier;
     private String description;
     private Date deadline;
@@ -38,23 +40,14 @@ public class Campaign {
     @JsonIgnore
     private List<Donation> donations;
 
-    public Campaign(String shortName, String urlIdentifier, String description,
-                    Date deadline, Status status, Double goal, User owner,
-                    List<Comment> comments, List<Donation> donations) {
-        this.shortName = shortName;
-        this.urlIdentifier = urlIdentifier;
-        this.description = description;
-        this.deadline = deadline;
-        this.status = status;
-        this.goal = goal;
-        this.remaining = goal;
-        this.owner = owner;
-        this.comments = comments;
-        this.donations = donations;
-    }
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Like> likeList;
 
-    public Campaign() {
-    }
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Dislike> dislikeList;
 
     public Comment addComment(Comment comment) {
         this.comments.add(comment);
@@ -138,6 +131,30 @@ public class Campaign {
         this.owner = owner;
     }
 
+    public List<Like> getLikeList() {
+        return likeList;
+    }
+
+    public int getNumLikes(){
+        return likeList.size();
+    }
+
+    public void setLikeList(List<Like> likeList) {
+        this.likeList = likeList;
+    }
+
+    public List<Dislike> getDislikeList() {
+        return dislikeList;
+    }
+
+    public int getNumDislikes(){
+        return this.dislikeList.size();
+    }
+
+    public void setDislikeList(List<Dislike> dislikeList) {
+        this.dislikeList = dislikeList;
+    }
+
     private void setRemaining()
     {
         Double sum = 0.0;
@@ -188,5 +205,29 @@ public class Campaign {
         int result = id.hashCode();
         result = 31 * result + shortName.hashCode();
         return result;
+    }
+
+    public CampaignLikeDislike addLike(Like like) {
+
+        if (this.likeList.contains(like)){
+            this.likeList.remove(like);
+        } else {
+            this.dislikeList.removeIf(dislike -> dislike.getUser().equals(like.getUser()));
+            this.likeList.add(like);
+        }
+
+        return new CampaignLikeDislike(this.getNumLikes(), this.getNumDislikes());
+    }
+
+    public CampaignLikeDislike addDislike(Dislike dislike) {
+
+        if (dislikeList.contains(dislike)){
+            dislikeList.remove(dislike);
+        } else {
+            likeList.removeIf(like -> like.getUser().equals(dislike.getUser()));
+            dislikeList.add(dislike);
+        }
+
+        return new CampaignLikeDislike(this.getNumLikes(), this.getNumDislikes());
     }
 }
