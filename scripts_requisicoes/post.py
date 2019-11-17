@@ -76,7 +76,7 @@ for i in range(len(lista_comentarios)):
     header = {'Authorization': 'Bearer ' + auth}
 
     try:
-        r = requests.post(url + f'/campaign/{campaign}/comment/', json=comment, headers=header)
+        r = requests.post(url + f'/campaign/{campaign}/comment', json=comment, headers=header)
         comments.append(r.json())
         print("Comentario", comment['comment'], "cadastrado")
     except:

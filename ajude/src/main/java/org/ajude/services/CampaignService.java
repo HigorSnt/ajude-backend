@@ -4,10 +4,7 @@ import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.CampaignHome;
 import org.ajude.dtos.DonationDateValue;
-import org.ajude.entities.Campaign;
-import org.ajude.entities.Comment;
-import org.ajude.entities.Donation;
-import org.ajude.entities.User;
+import org.ajude.entities.*;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
 import org.ajude.exceptions.NotFoundException;
@@ -25,7 +22,7 @@ import java.util.Optional;
 
 @Service
 public class CampaignService {
-
+    
     private CampaignRepository<Campaign, Long> campaignRepository;
 
     @Autowired
@@ -200,5 +197,18 @@ public class CampaignService {
         });
 
         return homeList;
+    }
+    public Like addLike(String campaignUrl, Like like) throws NotFoundException {
+        Campaign campaign = this.getCampaign(campaignUrl);
+        Like result = campaign.addLike(like);
+        campaignRepository.save(campaign);
+        return result;
+    }
+
+    public Dislike addDislike(String campaignUrl, Dislike dislike) throws NotFoundException {
+        Campaign campaign = this.getCampaign(campaignUrl);
+        Dislike result = campaign.addDislike(dislike);
+        campaignRepository.save(campaign);
+        return result;
     }
 }

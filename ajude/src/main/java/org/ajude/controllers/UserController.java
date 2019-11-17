@@ -5,7 +5,6 @@ import org.ajude.dtos.UserProfile;
 import org.ajude.entities.User;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.exceptions.NotFoundException;
-import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
