@@ -3,14 +3,8 @@ package org.ajude.services;
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.CampaignHome;
-import org.ajude.dtos.CampaignLikeDislike;
 import org.ajude.dtos.DonationDateValue;
-import org.ajude.entities.Campaign;
-import org.ajude.entities.Comment;
-import org.ajude.entities.Dislike;
-import org.ajude.entities.Donation;
-import org.ajude.entities.Like;
-import org.ajude.entities.User;
+import org.ajude.entities.*;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
 import org.ajude.exceptions.NotFoundException;
@@ -18,7 +12,6 @@ import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -177,17 +170,17 @@ public class CampaignService {
         return campaign;
     }
 
-    public CampaignLikeDislike addLike(String campaignUrl, Like like) throws NotFoundException {
+    public Like addLike(String campaignUrl, Like like) throws NotFoundException {
         Campaign campaign = this.getCampaign(campaignUrl);
-        CampaignLikeDislike campaignLikeDislike = campaign.addLike(like);
+        Like result = campaign.addLike(like);
         campaignRepository.save(campaign);
-        return campaignLikeDislike;
+        return result;
     }
 
-    public CampaignLikeDislike addDislike(String campaignUrl, Dislike dislike) throws NotFoundException {
+    public Dislike addDislike(String campaignUrl, Dislike dislike) throws NotFoundException {
         Campaign campaign = this.getCampaign(campaignUrl);
-        CampaignLikeDislike campaignLikeDislike = campaign.addDislike(dislike);
+        Dislike result = campaign.addDislike(dislike);
         campaignRepository.save(campaign);
-        return campaignLikeDislike;
+        return result;
     }
 }

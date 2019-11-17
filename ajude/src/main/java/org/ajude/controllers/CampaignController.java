@@ -5,7 +5,6 @@ import org.ajude.dtos.CampaignGoal;
 import org.ajude.dtos.CampaignHome;
 import org.ajude.dtos.DonationDateValue;
 import org.ajude.entities.Campaign;
-import org.ajude.entities.Comment;
 import org.ajude.entities.Dislike;
 import org.ajude.entities.Like;
 import org.ajude.exceptions.InvalidDateException;
@@ -116,7 +115,7 @@ public class CampaignController {
                                   @RequestBody Like like) throws ServletException, NotFoundException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
-        like.setUser(userService.getUserByEmail(userEmail).get());
+        like.setOwner(userService.getUserByEmail(userEmail).get());
         return new ResponseEntity(this.campaignService.addLike(campaignUrl, like), HttpStatus.CREATED);
     }
 
@@ -126,7 +125,7 @@ public class CampaignController {
                                   @RequestBody Dislike dislike) throws ServletException, NotFoundException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
-        dislike.setUser(userService.getUserByEmail(userEmail).get());
+        dislike.setOwner(userService.getUserByEmail(userEmail).get());
         return new ResponseEntity(this.campaignService.addDislike(campaignUrl, dislike), HttpStatus.CREATED);
     }
 }

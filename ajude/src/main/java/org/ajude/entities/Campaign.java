@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.ajude.dtos.UserNameEmail;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.ajude.dtos.CampaignLikeDislike;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
 
@@ -167,9 +166,9 @@ public class Campaign {
         this.remaining = goal - sum;
     }
 
-    public Double getRemaining(){
-        setRemaining();
+    public Double getRemaining() {
         return remaining;
+    }
 
     public List<Comment> getComments() {
         return comments;
@@ -211,27 +210,27 @@ public class Campaign {
         return result;
     }
 
-    public CampaignLikeDislike addLike(Like like) {
+    public Like addLike(Like like) {
 
         if (this.likeList.contains(like)){
             this.likeList.remove(like);
         } else {
-            this.dislikeList.removeIf(dislike -> dislike.getUser().equals(like.getUser()));
+            this.dislikeList.removeIf(dislike -> dislike.getOwner().equals(like.getOwner()));
             this.likeList.add(like);
         }
 
-        return new CampaignLikeDislike(this.getNumLikes(), this.getNumDislikes());
+        return like;
     }
 
-    public CampaignLikeDislike addDislike(Dislike dislike) {
+    public Dislike addDislike(Dislike dislike) {
 
         if (dislikeList.contains(dislike)){
             dislikeList.remove(dislike);
         } else {
-            likeList.removeIf(like -> like.getUser().equals(dislike.getUser()));
+            likeList.removeIf(like -> like.getOwner().equals(dislike.getOwner()));
             dislikeList.add(dislike);
         }
 
-        return new CampaignLikeDislike(this.getNumLikes(), this.getNumDislikes());
+        return dislike;
     }
 }

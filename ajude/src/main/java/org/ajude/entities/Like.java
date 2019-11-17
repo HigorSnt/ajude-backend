@@ -1,5 +1,8 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.ajude.dtos.UserNameEmail;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -10,11 +13,13 @@ public class Like {
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne
-    private User user;
 
-    public Like(User user) {
-        this.user = user;
+    @ManyToOne
+    @JsonIgnore
+    private User owner;
+
+    public Like(User owner) {
+        this.owner = owner;
     }
 
     public Like() {
@@ -28,12 +33,21 @@ public class Like {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public UserNameEmail getUser() {
+        return new UserNameEmail(
+                this.owner.getEmail(),
+                this.owner.getFirstName(),
+                this.owner.getLastName(),
+                this.owner.getUsername()
+        );
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     @Override
@@ -41,11 +55,11 @@ public class Like {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Like like = (Like) o;
-        return user.equals(like.user);
+        return owner.equals(like.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user);
+        return Objects.hash(owner);
     }
 }

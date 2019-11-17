@@ -1,5 +1,8 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.ajude.dtos.UserNameEmail;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -10,10 +13,11 @@ public class Dislike {
     @GeneratedValue
     private Long id;
     @ManyToOne
-    private User user;
+    @JsonIgnore
+    private User owner;
 
-    public Dislike(User user) {
-        this.user = user;
+    public Dislike(User owner) {
+        this.owner = owner;
     }
 
     public Dislike() {
@@ -27,12 +31,21 @@ public class Dislike {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public UserNameEmail getUser() {
+        return new UserNameEmail(
+                this.owner.getEmail(),
+                this.owner.getFirstName(),
+                this.owner.getLastName(),
+                this.owner.getUsername()
+        );
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public User getOwner() {
+        return owner;
     }
 
     @Override
@@ -40,11 +53,11 @@ public class Dislike {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Dislike dislike = (Dislike) o;
-        return user.equals(dislike.user);
+        return owner.equals(dislike.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user);
+        return Objects.hash(owner);
     }
 }
