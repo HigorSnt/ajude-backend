@@ -28,7 +28,6 @@ public class Campaign {
     private double remaining;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "idUser")
     @JsonIgnore
     private User owner;
 

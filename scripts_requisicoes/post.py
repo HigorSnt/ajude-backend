@@ -1,7 +1,6 @@
 # coding: utf-8
 import requests
 import json
-from random import randint
 
 '''
 Para executar o script é preciso ter a biblioteca 'requests' instalada.
@@ -77,7 +76,7 @@ for i in range(len(lista_comentarios)):
     header = {'Authorization': 'Bearer ' + auth}
 
     try:
-        r = requests.post(url + f'/campaign/{campaign}/comment', json=comment, headers=header)
+        r = requests.post(url + f'/campaign/{campaign}/comment/', json=comment, headers=header)
         comments.append(r.json())
         print("Comentario", comment['comment'], "cadastrado")
     except:
@@ -86,7 +85,6 @@ for i in range(len(lista_comentarios)):
         print("Comentario", comment['comment'])
 
 print()
-
 # Respondendo comentários
 for i in range(len(lista_respostas)):
     auth = tokens[i % len(tokens)]
@@ -102,16 +100,3 @@ for i in range(len(lista_respostas)):
         print(r.raise_for_status())
         print("Erro ao processar requisição")
         print("Comentario", comment['comment'])
-
-# Adicionando Likes
-for i in range(0, len(lista_usuarios)):
-    auth = tokens[i]
-    header = {'Authorization': 'Bearer ' + auth}
-    for i in range(0, randint(0, len(lista_campanhas)), randint(1, 3)):
-        campaign = lista_campanhas[i % len(lista_campanhas)]['urlIdentifier']
-        try:
-            r = requests.post(url + f'/campaign/{campaign}/like', json='{}', headers=header)
-            print("Like adicionado na campanha ", campaign)
-        except:
-            print(r.raise_for_status())
-            print("Erro ao adicionar likes")
