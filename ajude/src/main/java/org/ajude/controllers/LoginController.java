@@ -37,7 +37,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody Login user) {
-        Optional<User> authUser = this.userService.getUser(user.getEmail());
+        Optional<User> authUser = this.userService.getUserByEmail(user.getEmail());
 
         if (authUser.isEmpty()) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);

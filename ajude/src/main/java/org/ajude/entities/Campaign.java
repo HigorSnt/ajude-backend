@@ -1,53 +1,52 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Campaign {
 
     @Id
     @GeneratedValue
     private Long id;
-    @NotEmpty(message = "short name cannot be empty")
     private String shortName;
-    @NotEmpty(message = "urlIdentifier name cannot be empty")
     private String urlIdentifier;
     private String description;
     private Date deadline;
     private Status status;
-    private Double goal;
+    private double goal;
+    private double remaining;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "idUser")
     @JsonIgnore
     private User owner;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
     private List<Comment> comments;
 
-    public Campaign(String shortName, String urlIdentifier, String description,
-                    Date deadline, Status status, Double goal, User owner, List<Comment> comments) {
-        this.shortName = shortName;
-        this.urlIdentifier = urlIdentifier;
-        this.description = description;
-        this.deadline = deadline;
-        this.status = status;
-        this.goal = goal;
-        this.owner = owner;
-        this.comments = comments;
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
+    @JsonIgnore
+    private List<Donation> donations;
 
-    public Campaign() {
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
+    private List<Like> likeList;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
+    private List<Dislike> dislikeList;
 
     public Comment addComment(Comment comment) {
         this.comments.add(comment);
@@ -56,7 +55,7 @@ public class Campaign {
     }
 
     public Comment addCommentResponse(Long commentId, Comment reply) throws NotFoundException {
-        Comment comment = this.comments.stream().filter(c -> c.getId() == commentId).findAny().get();
+        Comment comment = this.comments.stream().filter(c -> c.getId().equals(commentId)).findAny().get();
 
         if (comment != null) {
             comment.setReply(reply);
@@ -115,15 +114,24 @@ public class Campaign {
         this.status = status;
     }
 
-    public Double getGoal() {
+    public double getGoal() {
         return goal;
     }
 
-    public void setGoal(Double goal) {
+    public void setGoal(double goal) {
         this.goal = goal;
     }
 
-    public User getOwner() {
+    public UserNameEmail getUser() {
+        return new UserNameEmail(
+                this.owner.getEmail(),
+                this.owner.getFirstName(),
+                this.owner.getLastName(),
+                this.owner.getUsername()
+        );
+    }
+
+    private User getOwner() {
         return owner;
     }
 
@@ -131,12 +139,89 @@ public class Campaign {
         this.owner = owner;
     }
 
+    public List<Like> getLikeList() {
+        return this.likeList;
+    }
+
+    public int getNumLikes() {
+        return this.likeList.size();
+    }
+
+    public void setLikeList(List<Like> likeList) {
+        this.likeList = likeList;
+    }
+
+    public List<Dislike> getDislikeList() {
+        return dislikeList;
+    }
+
+    public int getNumDislikes() {
+        return this.dislikeList.size();
+    }
+
+    public void setDislikeList(List<Dislike> dislikeList) {
+        this.dislikeList = dislikeList;
+    }
+
+    private void setRemaining() {
+        double sum = 0.0;
+        for (Donation d : donations) sum += d.getValue();
+        this.remaining = goal - sum;
+    }
+
+    public void setRemaining(double remaining) {
+        this.remaining = remaining;
+    }
+
+    public double getRemaining() {
+        setRemaining();
+        return remaining;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
 
+    public Comment lastCommentAdded() {
+        return this.comments.get(this.comments.size() - 1);
+    }
+
+    public void deleteComment(User owner, Long idComment) {
+        for (Comment comment : comments)
+            if (comment.recursiveDelete(owner, idComment) == 1) break;
+    }
+
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public void addDonation(Donation donation) {
+        donations.add(donation);
+        setRemaining();
+    }
+
+    public Like addLike(Like like) {
+
+        if (this.likeList.contains(like)) {
+            this.likeList.remove(like);
+        } else {
+            this.dislikeList.removeIf(dislike -> dislike.getOwner().equals(like.getLikeUser()));
+            this.likeList.add(like);
+        }
+
+        return like;
+    }
+
+    public Dislike addDislike(Dislike dislike) {
+
+        if (dislikeList.contains(dislike)) {
+            dislikeList.remove(dislike);
+        } else {
+            likeList.removeIf(like -> like.getLikeUser().equals(dislike.getOwner()));
+            dislikeList.add(dislike);
+        }
+
+        return dislike;
     }
 
     @Override

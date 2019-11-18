@@ -1,17 +1,14 @@
 package org.ajude.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class Login {
 
     private String email;
     private String password;
-
-    public Login() {
-    }
-
-    public Login(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 
     public String getEmail() {
         return email;

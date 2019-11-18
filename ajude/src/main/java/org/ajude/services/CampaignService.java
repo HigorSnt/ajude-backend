@@ -2,9 +2,13 @@ package org.ajude.services;
 
 import org.ajude.dtos.CampaignDeadline;
 import org.ajude.dtos.CampaignGoal;
-import org.ajude.entities.Campaign;
-import org.ajude.entities.Comment;
-import org.ajude.exceptions.*;
+import org.ajude.dtos.CampaignHome;
+import org.ajude.dtos.DonationDateValue;
+import org.ajude.entities.*;
+import org.ajude.exceptions.InvalidDateException;
+import org.ajude.exceptions.InvalidGoalException;
+import org.ajude.exceptions.NotFoundException;
+import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.repositories.CampaignRepository;
 import org.ajude.utils.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +22,10 @@ import java.util.Optional;
 
 @Service
 public class CampaignService {
-    @Autowired
+
     private CampaignRepository<Campaign, Long> campaignRepository;
 
+    @Autowired
     public CampaignService(CampaignRepository<Campaign, Long> campaignRepository) {
         this.campaignRepository = campaignRepository;
     }
@@ -29,6 +34,8 @@ public class CampaignService {
 
         verifyDate(campaign.getDeadline());
         verifyGoal(campaign.getGoal());
+
+        campaign.setRemaining(campaign.getGoal());
         campaign.setStatus(Status.A);
         this.campaignRepository.save(campaign);
 
@@ -40,15 +47,24 @@ public class CampaignService {
         Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(urlIdentifier);
 
         if (!campaign.isEmpty()) {
-            return campaign.get();
+            Campaign c = campaign.get();
+            c.getComments();
+            c.getLikeList();
 
+            return c;
         } else {
             throw new NotFoundException("The Campaign " + urlIdentifier + " was not found");
         }
     }
 
     public List<Campaign> searchCampaigns(String substring, Status status) {
-        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring, status);
+        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring,
+                status);
+
+        for (Campaign c: campaigns) {
+            c.getComments();
+            c.getLikeList();
+        }
 
         return campaigns;
     }
@@ -62,20 +78,24 @@ public class CampaignService {
 
         if (campaign.getStatus().equals(Status.A)) {
             campaign.setStatus(Status.C);
-            campaignRepository.saveAndFlush(campaign);
+            this.campaignRepository.saveAndFlush(campaign);
         }
 
         return campaign;
     }
 
     public Comment addCampaignComment(String campaignUrl, Comment comment) throws NotFoundException {
+        Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
 
-        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
-        if (!campaign.isEmpty()) {
-            Campaign c = campaign.get();
-            Comment com = c.addComment(comment);
-            this.campaignRepository.save(c);
-            return com;
+        if (!campaignOptional.isEmpty()) {
+            Campaign campaign = campaignOptional.get();
+            campaign.addComment(comment);
+            campaign.getComments();
+            campaign.getLikeList();
+
+            campaign = this.campaignRepository.save(campaign);
+
+            return campaign.lastCommentAdded();
 
         } else {
             throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
@@ -83,12 +103,14 @@ public class CampaignService {
     }
 
     public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws NotFoundException {
-        Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(campaignUrl);
-        if (!campaign.isEmpty()) {
-            Campaign c = campaign.get();
-            Comment com = c.addCommentResponse(commentId, reply);
-            this.campaignRepository.save(c);
-            return com;
+        Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+        if (!campaignOptional.isEmpty()) {
+            Campaign campaign = campaignOptional.get();
+            Comment comment = campaign.addCommentResponse(commentId, reply);
+
+            this.campaignRepository.save(campaign);
+
+            return comment;
         } else {
             throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
         }
@@ -116,7 +138,13 @@ public class CampaignService {
         verifyGoal(newGoal.getGoal());
 
         campaign.setGoal(newGoal.getGoal());
+        campaign.getRemaining();
+
         this.campaignRepository.saveAndFlush(campaign);
+
+        campaign.getLikeList();
+        campaign.getComments();
+
         return campaign;
     }
 
@@ -132,9 +160,80 @@ public class CampaignService {
         }
     }
 
-    private void verifyIfIsOwner(String userEmail, Campaign campaign) throws UnauthorizedException {
-        if (!campaign.getOwner().getEmail().equals(userEmail)) {
+    private void verifyIfIsOwner(String userEmail, Campaign campaign)
+            throws UnauthorizedException {
+
+        if (!campaign.getUser().getEmail().equals(userEmail)) {
             throw new UnauthorizedException("User is not the owner of this campaign");
         }
+    }
+
+    public Campaign deleteComment(String campaignUrl, User owner, Long commentId)
+            throws UnauthorizedException, NotFoundException {
+
+        Campaign campaign = this.getCampaign(campaignUrl);
+
+        campaign.deleteComment(owner, commentId);
+        this.campaignRepository.save(campaign);
+
+        return campaign;
+    }
+
+    public Campaign donate(String campaignURL, User user,
+                           DonationDateValue donationDTO) throws NotFoundException {
+
+        Donation donation = new Donation(donationDTO.getValue(), user, donationDTO.getDate());
+        Campaign campaign = this.getCampaign(campaignURL);
+
+        campaign.addDonation(donation);
+        this.campaignRepository.save(campaign);
+        return campaign;
+    }
+
+    public List<CampaignHome> getCampaignHomeByRemaining() {
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByRemainingDesc(Status.A);
+
+        return transformCampaignsToCampaignsHome(campaigns);
+    }
+
+    public List<CampaignHome> getCampaignHomeByDate() {
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByDeadlineAsc(Status.A);
+
+        return transformCampaignsToCampaignsHome(campaigns);
+    }
+
+    public List<CampaignHome> getCampaignHomeByLike() {
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByLikes(Status.A);
+
+        return transformCampaignsToCampaignsHome(campaigns);
+    }
+
+    private List<CampaignHome> transformCampaignsToCampaignsHome(List<Campaign> campaigns) {
+        List<CampaignHome> homeList = new ArrayList<>();
+
+        campaigns.forEach(campaign -> {
+            homeList.add(new CampaignHome(
+                    campaign.getShortName(), campaign.getUrlIdentifier(),
+                    campaign.getDescription(), campaign.getDeadline(),
+                    campaign.getStatus(), campaign.getGoal(), campaign.getRemaining(),
+                    campaign.getNumLikes(), campaign.getNumDislikes()));
+        });
+
+        return homeList;
+    }
+
+    public Like addLike(String campaignUrl, Like like) throws NotFoundException {
+        Campaign campaign = this.getCampaign(campaignUrl);
+        Like result = campaign.addLike(like);
+        campaignRepository.save(campaign);
+
+        return result;
+    }
+
+    public Dislike addDislike(String campaignUrl, Dislike dislike) throws NotFoundException {
+        Campaign campaign = this.getCampaign(campaignUrl);
+        Dislike result = campaign.addDislike(dislike);
+        campaignRepository.save(campaign);
+        return result;
     }
 }

@@ -1,34 +1,30 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.ajude.dtos.UserNameEmail;
 
 import javax.persistence.*;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Comment {
 
     @Id
     @GeneratedValue
     private Long id;
     private String comment;
+    private boolean isDeleted;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER,
+            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL})
     private Comment reply;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
     private User owner;
-
-    public Comment() {
-    }
-
-    public Comment(Long id, String comment, Comment reply, User owner) {
-        this.id = id;
-        this.comment = comment;
-        this.reply = reply;
-        this.owner = owner;
-    }
 
     public Long getId() {
         return id;
@@ -39,11 +35,19 @@ public class Comment {
     }
 
     public String getComment() {
-        return comment;
+        return isDeleted ? "" : comment;
     }
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public Comment getReply() {
@@ -54,11 +58,32 @@ public class Comment {
         this.reply = reply;
     }
 
-    public User getOwner() {
+    public void delete() {
+        this.isDeleted = true;
+    }
+
+    public UserNameEmail getUser() {
+        return new UserNameEmail(
+                this.owner.getEmail(),
+                this.owner.getFirstName(),
+                this.owner.getLastName(),
+                this.owner.getUsername()
+        );
+    }
+
+    private User getOwner() {
         return owner;
     }
 
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    public int recursiveDelete(User owner, Long idComment) {
+        if (this.id.equals(idComment) && owner.equals(this.owner)) {
+            this.delete();
+            return 1;
+        } else if (this.reply != null) reply.recursiveDelete(owner, idComment);
+        return 0;
     }
 }

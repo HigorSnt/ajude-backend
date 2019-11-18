@@ -3,21 +3,21 @@
         "shortName": "Cadeira para Maria filha de Joao",
         "urlIdentifier": "cadeira-para-maria-filha-de-joao",
         "description": "Cadeira de rodas",
-        "deadline": "01-01-2020",
+        "deadline": "30-11-2019",
         "goal": "2000.00"
     },
     {
         "shortName": "Uma bolsa para Higor",
         "urlIdentifier": "uma-bolsa-para-higor",
         "description": "Vamos conseguir uma bolsa para Higor",
-        "deadline": "01-01-2020",
+        "deadline": "25-12-2019",
         "goal": "3000.00"
     },
     {
         "shortName": "Projeto X",
         "urlIdentifier": "projeto-x",
         "description": "Falta de ideias",
-        "deadline": "01-01-2020",
+        "deadline": "04-12-2019",
         "goal": "1000000.00"
     },
     {
@@ -31,7 +31,7 @@
         "shortName": "Curso comunitario de programacao",
         "urlIdentifier": "curso-comunitario-de-programacao",
         "description": "Compra de novos computadores para um curso de programacao para criancas",
-        "deadline": "01-01-2020",
+        "deadline": "29-11-2020",
         "goal": "10000"
     },
     {
@@ -73,7 +73,7 @@
         "shortName": "Time de futebol",
         "urlIdentifier": "time-de-futebol",
         "description": "Compra de material para o projeto que visa resgatar jovens e crianças das ruas por meio do esporte",
-        "deadline": "01-01-2020",
+        "deadline": "10-12-2019",
         "goal": "4000"
     },
     {

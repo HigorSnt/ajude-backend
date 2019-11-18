@@ -20,7 +20,7 @@ public class StatusChecker {
     private CampaignRepository<Long, Campaign> campaignRepository;
     //                    hours * minutes * seconds * miliseconds
     private final int interval = 24 * 60 * 60 * 1000;
-
+    
     @Autowired
     public StatusChecker(CampaignRepository<Long, Campaign> campaignRepository) {
         this.campaignRepository = campaignRepository;
@@ -31,12 +31,11 @@ public class StatusChecker {
         List<Campaign> campaigns = this.campaignRepository.findAll();
 
         campaigns.forEach(c -> {
-            //TODO Uma campanha se torna vencida quando o deadline
-            // configurado para atingir a meta chegou e a meta não foi atingida.
-            // Finalmente, uma campanha é marcada como concluida
-            // quando ela atingir a meta e o deadline
             if (c.getDeadline().before(Date.from(Instant.now()))) {
-                c.setStatus(Status.E);
+                if (c.getGoal() >= c.getRemaining())
+                    c.setStatus(Status.F);
+                else
+                    c.setStatus(Status.E);
 
                 this.campaignRepository.save(c);
             }

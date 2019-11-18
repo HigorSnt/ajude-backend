@@ -1,11 +1,16 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -14,20 +19,25 @@ public class User {
     private String firstName;
     private String lastName;
     private String creditCardNumber;
+    private String username;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Campaign> campaigns;
 
-    public User() {
+    public String getEmail() {
+        return email;
     }
 
-    public User(String email, String firstName, String lastName,
-                String creditCardNumber, String password, List<Campaign> campaigns) {
+    public void setEmail(String email) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.creditCardNumber = creditCardNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
         this.campaigns = campaigns;
     }
@@ -64,12 +74,20 @@ public class User {
         this.creditCardNumber = creditCardNumber;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUsername() {
+        return username;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public List<Campaign> getCampaigns() {
+        return campaigns;
+    }
+
+    public void setCampaigns(List<Campaign> campaigns) {
+        this.campaigns = campaigns;
     }
 
     public List<Campaign> getCampaigns() {
