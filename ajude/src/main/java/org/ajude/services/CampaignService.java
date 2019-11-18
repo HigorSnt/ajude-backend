@@ -50,6 +50,7 @@ public class CampaignService {
             Campaign c = campaign.get();
             c.getComments();
             c.getLikeList();
+
             return c;
         } else {
             throw new NotFoundException("The Campaign " + urlIdentifier + " was not found");
@@ -89,6 +90,9 @@ public class CampaignService {
         if (!campaignOptional.isEmpty()) {
             Campaign campaign = campaignOptional.get();
             campaign.addComment(comment);
+            campaign.getComments();
+            campaign.getLikeList();
+
             campaign = this.campaignRepository.save(campaign);
 
             return campaign.lastCommentAdded();
@@ -121,6 +125,7 @@ public class CampaignService {
         verifyDate(newDeadline.getDeadline());
 
         campaign.setDeadline(newDeadline.getDeadline());
+
         this.campaignRepository.saveAndFlush(campaign);
         return campaign;
     }
@@ -135,6 +140,9 @@ public class CampaignService {
 
         campaign.setGoal(newGoal.getGoal());
         this.campaignRepository.saveAndFlush(campaign);
+        campaign.getLikeList();
+        campaign.getComments();
+
         return campaign;
     }
 
