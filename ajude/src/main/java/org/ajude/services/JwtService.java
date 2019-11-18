@@ -38,7 +38,6 @@ public class JwtService {
         validateHeader(authorizationHeader);
 
         String token = authorizationHeader.substring(this.tokenIndex);
-
         String subject = null;
 
         try {

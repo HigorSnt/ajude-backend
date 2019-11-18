@@ -125,7 +125,6 @@ public class CampaignService {
         verifyDate(newDeadline.getDeadline());
 
         campaign.setDeadline(newDeadline.getDeadline());
-
         this.campaignRepository.saveAndFlush(campaign);
         return campaign;
     }

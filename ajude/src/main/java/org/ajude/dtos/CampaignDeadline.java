@@ -3,7 +3,6 @@ package org.ajude.dtos;
 import java.util.Date;
 
 public class CampaignDeadline {
-
     private Date deadline;
 
     public CampaignDeadline(Date deadline) {

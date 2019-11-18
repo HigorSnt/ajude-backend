@@ -200,24 +200,6 @@ public class Campaign {
         setRemaining();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Campaign campaign = (Campaign) o;
-
-        if (!id.equals(campaign.id)) return false;
-        return shortName.equals(campaign.shortName);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + shortName.hashCode();
-        return result;
-    }
-
     public Like addLike(Like like) {
 
         if (this.likeList.contains(like)) {
@@ -240,5 +222,23 @@ public class Campaign {
         }
 
         return dislike;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Campaign campaign = (Campaign) o;
+
+        if (!id.equals(campaign.id)) return false;
+        return shortName.equals(campaign.shortName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + shortName.hashCode();
+        return result;
     }
 }
