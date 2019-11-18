@@ -18,9 +18,11 @@ public interface CampaignRepository<T, Long> extends JpaRepository<Campaign, Lon
 
     List<Campaign> findTop5ByStatusOrderByDeadlineAsc(Status status);
 
-    @Query(value = "SELECT id, deadline, description, goal, remaining, short_name, status, " +
-            "url_identifier, id_user, COUNT(id) AS q " +
-            "FROM (SELECT * FROM campaign WHERE status = :status) AS t LEFT JOIN like_table AS l ON t.id = l.id_campaign " +
+    @Query(value =
+            "SELECT id, deadline, description, goal, remaining, short_name, status, url_identifier, owner_email, COUNT(id) AS q " +
+            "FROM (SELECT * FROM campaign WHERE status = 0) AS t LEFT JOIN like_table AS l " +
+            "ON (t.id = l.id_campaign) " +
+            "WHERE id_campaign IS NOT NULL " +
             "GROUP BY id " +
             "ORDER BY q DESC " +
             "LIMIT 5", nativeQuery = true)

@@ -139,7 +139,10 @@ public class CampaignService {
         verifyGoal(newGoal.getGoal());
 
         campaign.setGoal(newGoal.getGoal());
+        campaign.getRemaining();
+
         this.campaignRepository.saveAndFlush(campaign);
+
         campaign.getLikeList();
         campaign.getComments();
 

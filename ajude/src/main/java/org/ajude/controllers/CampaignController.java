@@ -124,7 +124,7 @@ public class CampaignController {
                                   @RequestBody Like like) throws ServletException, NotFoundException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
-        like.setOwner(userService.getUserByEmail(userEmail).get());
+        like.setLikeUser(userService.getUserByEmail(userEmail).get());
 
         return new ResponseEntity(this.campaignService.addLike(campaignUrl, like), HttpStatus.CREATED);
     }

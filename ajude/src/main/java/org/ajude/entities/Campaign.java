@@ -223,7 +223,7 @@ public class Campaign {
         if (this.likeList.contains(like)) {
             this.likeList.remove(like);
         } else {
-            this.dislikeList.removeIf(dislike -> dislike.getOwner().equals(like.getOwner()));
+            this.dislikeList.removeIf(dislike -> dislike.getOwner().equals(like.getLikeUser()));
             this.likeList.add(like);
         }
 
@@ -235,7 +235,7 @@ public class Campaign {
         if (dislikeList.contains(dislike)) {
             dislikeList.remove(dislike);
         } else {
-            likeList.removeIf(like -> like.getOwner().equals(dislike.getOwner()));
+            likeList.removeIf(like -> like.getLikeUser().equals(dislike.getOwner()));
             dislikeList.add(dislike);
         }
 

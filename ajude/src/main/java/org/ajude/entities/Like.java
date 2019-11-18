@@ -21,7 +21,7 @@ public class Like {
 
     @ManyToOne
     @JsonIgnore
-    private User owner;
+    private User likeUser;
 
     public Long getId() {
         return id;
@@ -33,19 +33,19 @@ public class Like {
 
     public UserNameEmail getUser() {
         return new UserNameEmail(
-                this.owner.getEmail(),
-                this.owner.getFirstName(),
-                this.owner.getLastName(),
-                this.owner.getUsername()
+                this.likeUser.getEmail(),
+                this.likeUser.getFirstName(),
+                this.likeUser.getLastName(),
+                this.likeUser.getUsername()
         );
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setLikeUser(User likeUser) {
+        this.likeUser = likeUser;
     }
 
-    public User getOwner() {
-        return owner;
+    public User getLikeUser() {
+        return likeUser;
     }
 
     @Override
@@ -53,11 +53,11 @@ public class Like {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Like like = (Like) o;
-        return owner.equals(like.owner);
+        return likeUser.equals(like.likeUser);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(owner);
+        return Objects.hash(likeUser);
     }
 }

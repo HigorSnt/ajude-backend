@@ -10,8 +10,6 @@ public class DonationDateValue {
     public DonationDateValue() {
     }
 
-    ;
-
     public DonationDateValue(Double value, Date date) {
         this.value = value;
         this.date = date;
