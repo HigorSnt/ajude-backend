@@ -14,4 +14,24 @@
         "password": "Senha123"
     },
     {
+        "firstName": "João",
+        "lastName": "ÉotaldoJoão hehehe",
+        "creditCardNumber": "00000000-00",
+        "email":"higorsantos_36@hotmail.com",
+        "password": "sei.la@"
+    },
+    {
+        "firstName": "Pedro",
+        "lastName": "Pedrão",
+        "creditCardNumber": "00000000-00",
+        "email":"higor.dantas@ccc.ufcg.edu.br",
+        "password": "abc125"
+    },
+    {
+        "firstName": "Izaquiel",
+        "lastName": "Cordeiro",
+        "creditCardNumber": "1651564151",
+        "email":"izaquiel.cordeiro@ccc.ufcg.edu.br",
+        "password": "120325"
+    }
 ]

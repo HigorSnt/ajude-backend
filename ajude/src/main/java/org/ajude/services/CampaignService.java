@@ -47,7 +47,10 @@ public class CampaignService {
         Optional<Campaign> campaign = this.campaignRepository.findByUrlIdentifier(urlIdentifier);
 
         if (!campaign.isEmpty()) {
-            return campaign.get();
+            Campaign c = campaign.get();
+            c.getComments();
+            c.getLikeList();
+            return c;
         } else {
             throw new NotFoundException("The Campaign " + urlIdentifier + " was not found");
         }
@@ -56,6 +59,11 @@ public class CampaignService {
     public List<Campaign> searchCampaigns(String substring, Status status) {
         List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring,
                 status);
+
+        for (Campaign c: campaigns) {
+            c.getComments();
+            c.getLikeList();
+        }
 
         return campaigns;
     }

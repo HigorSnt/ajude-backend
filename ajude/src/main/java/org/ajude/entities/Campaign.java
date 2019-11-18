@@ -31,20 +31,20 @@ public class Campaign {
     @JsonIgnore
     private User owner;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
     private List<Comment> comments;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
     @JsonIgnore
     private List<Donation> donations;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
     private List<Like> likeList;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
     private List<Dislike> dislikeList;
 
@@ -55,7 +55,7 @@ public class Campaign {
     }
 
     public Comment addCommentResponse(Long commentId, Comment reply) throws NotFoundException {
-        Comment comment = this.comments.stream().filter(c -> c.getId() == commentId).findAny().get();
+        Comment comment = this.comments.stream().filter(c -> c.getId().equals(commentId)).findAny().get();
 
         if (comment != null) {
             comment.setReply(reply);
