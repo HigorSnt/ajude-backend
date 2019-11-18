@@ -38,21 +38,18 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/home/goal")
-    public ResponseEntity<List<CampaignHome>> getCampaignHomeByGoal() {
-        //TODO
-        return new ResponseEntity(this.campaignService.getCampaignHomeByGoal(), HttpStatus.OK);
+    @GetMapping("/home/remaining")
+    public ResponseEntity<List<CampaignHome>> getCampaignHomeByRemaining() {
+        return new ResponseEntity(this.campaignService.getCampaignHomeByRemaining(), HttpStatus.OK);
     }
 
     @GetMapping("/home/date")
     public ResponseEntity<List<CampaignHome>> getCampaignHomeByDate() {
-        //TODO
         return new ResponseEntity(this.campaignService.getCampaignHomeByDate(), HttpStatus.OK);
     }
 
     @GetMapping("/home/like")
     public ResponseEntity<List<CampaignHome>> getCampaignHomeByLike() {
-        //TODO
         return new ResponseEntity(this.campaignService.getCampaignHomeByLike(), HttpStatus.OK);
     }
 
@@ -119,7 +116,7 @@ public class CampaignController {
         String email = jwtService.getSubjectByHeader(header);
         return new ResponseEntity(this.campaignService.donate(campaignUrl, userService.getUserByEmail(email).get(), donationDTO), HttpStatus.OK);
     }
-    
+
 
     @PostMapping("/campaign/{campaignUrl}/like")
     public ResponseEntity addLike(@RequestHeader("Authorization") String header,
@@ -128,13 +125,14 @@ public class CampaignController {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
         like.setOwner(userService.getUserByEmail(userEmail).get());
+
         return new ResponseEntity(this.campaignService.addLike(campaignUrl, like), HttpStatus.CREATED);
     }
 
     @PostMapping("/campaign/{campaignUrl}/dislike")
     public ResponseEntity addDislike(@RequestHeader("Authorization") String header,
-                                  @PathVariable("campaignUrl") String campaignUrl,
-                                  @RequestBody Dislike dislike) throws ServletException, NotFoundException {
+                                     @PathVariable("campaignUrl") String campaignUrl,
+                                     @RequestBody Dislike dislike) throws ServletException, NotFoundException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
         dislike.setOwner(userService.getUserByEmail(userEmail).get());

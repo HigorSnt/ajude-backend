@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
 
@@ -31,19 +29,24 @@ public class Campaign {
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "idUser")
+    @JsonIgnore
     private User owner;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
     private List<Comment> comments;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
     @JsonIgnore
     private List<Donation> donations;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
     private List<Like> likeList;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCampaign")
     private List<Dislike> dislikeList;
 
     public Comment addComment(Comment comment) {
@@ -141,7 +144,7 @@ public class Campaign {
         return this.likeList;
     }
 
-    public int getNumLikes(){
+    public int getNumLikes() {
         return this.likeList.size();
     }
 
@@ -153,7 +156,7 @@ public class Campaign {
         return dislikeList;
     }
 
-    public int getNumDislikes(){
+    public int getNumDislikes() {
         return this.dislikeList.size();
     }
 
@@ -163,7 +166,7 @@ public class Campaign {
 
     private void setRemaining() {
         double sum = 0.0;
-        for(Donation d : donations) sum += d.getValue();
+        for (Donation d : donations) sum += d.getValue();
         this.remaining = goal - sum;
     }
 
@@ -193,7 +196,7 @@ public class Campaign {
         this.comments = comments;
     }
 
-    public void addDonation (Donation donation) {
+    public void addDonation(Donation donation) {
         donations.add(donation);
         setRemaining();
     }
@@ -218,7 +221,7 @@ public class Campaign {
 
     public Like addLike(Like like) {
 
-        if (this.likeList.contains(like)){
+        if (this.likeList.contains(like)) {
             this.likeList.remove(like);
         } else {
             this.dislikeList.removeIf(dislike -> dislike.getOwner().equals(like.getOwner()));
@@ -230,7 +233,7 @@ public class Campaign {
 
     public Dislike addDislike(Dislike dislike) {
 
-        if (dislikeList.contains(dislike)){
+        if (dislikeList.contains(dislike)) {
             dislikeList.remove(dislike);
         } else {
             likeList.removeIf(like -> like.getOwner().equals(dislike.getOwner()));

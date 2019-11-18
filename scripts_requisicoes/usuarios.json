@@ -12,5 +12,12 @@
         "creditCardNumber": "00000000-00",
         "email":"higorsantos600@gmail.com",
         "password": "Senha123"
+    },
+    {
+        "email":"higorsantos_36@hotmail.com",
+        "firstName":"João",
+        "lastName":"ÉoTaldoJoão hehehe",
+        "creditCardNumber":"00000000",
+        "password":"Senha123"
     }
 ]

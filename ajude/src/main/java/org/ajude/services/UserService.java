@@ -81,8 +81,10 @@ public class UserService {
     }
 
     private String createUsername(String firstName, String lastName) {
-        String normalizedFirstName = Normalizer.normalize(firstName, Normalizer.Form.NFD);
-        String normalizedLastName = Normalizer.normalize(lastName, Normalizer.Form.NFD);
+        String normalizedFirstName = Normalizer.normalize(firstName, Normalizer.Form.NFD)
+                .replace(" ", ".");
+        String normalizedLastName = Normalizer.normalize(lastName, Normalizer.Form.NFD)
+                .replace(" ", ".");
         Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 
         String username = pattern.matcher(normalizedFirstName).replaceAll("") +

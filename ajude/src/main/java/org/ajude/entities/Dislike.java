@@ -1,27 +1,25 @@
 package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "dislike_table")
 public class Dislike {
+
     @Id
     @GeneratedValue
     private Long id;
     @ManyToOne
     @JsonIgnore
     private User owner;
-
-    public Dislike(User owner) {
-        this.owner = owner;
-    }
-
-    public Dislike() {
-    }
 
     public Long getId() {
         return id;

@@ -1,6 +1,7 @@
 package org.ajude.dtos;
 
 public class CampaignGoal {
+
     private double Goal;
 
     public CampaignGoal(double goal) {

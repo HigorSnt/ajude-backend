@@ -2,36 +2,34 @@ package org.ajude.dtos;
 
 import java.util.Date;
 
-public class DonationDateValue
-{
+public class DonationDateValue {
+
     private Double value;
     private Date date;
 
-    public DonationDateValue(){};
-
-    public DonationDateValue(Double value, Date date)
-    {
-        this.value = value;
-        this.date  = date;
+    public DonationDateValue() {
     }
 
-    public Double getValue()
-    {
+    ;
+
+    public DonationDateValue(Double value, Date date) {
+        this.value = value;
+        this.date = date;
+    }
+
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(Double value)
-    {
+    public void setValue(Double value) {
         this.value = value;
     }
 
-    public Date getDate()
-    {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date)
-    {
+    public void setDate(Date date) {
         this.date = date;
     }
 }

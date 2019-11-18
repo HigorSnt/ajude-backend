@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Service
 public class CampaignService {
-    
+
     private CampaignRepository<Campaign, Long> campaignRepository;
 
     @Autowired
@@ -172,36 +172,43 @@ public class CampaignService {
         return campaign;
     }
 
-    public List<CampaignHome> getCampaignHomeByGoal() {
+    public List<CampaignHome> getCampaignHomeByRemaining() {
         List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByRemainingDesc(Status.A);
 
         return transformCampaignsToCampaignsHome(campaigns);
     }
 
     public List<CampaignHome> getCampaignHomeByDate() {
-        return new ArrayList();
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByDeadlineAsc(Status.A);
+
+        return transformCampaignsToCampaignsHome(campaigns);
     }
 
     public List<CampaignHome> getCampaignHomeByLike() {
-        return new ArrayList();
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByLikes(Status.A);
+
+        return transformCampaignsToCampaignsHome(campaigns);
     }
 
     private List<CampaignHome> transformCampaignsToCampaignsHome(List<Campaign> campaigns) {
         List<CampaignHome> homeList = new ArrayList<>();
 
         campaigns.forEach(campaign -> {
-            homeList.add(new CampaignHome(campaign.getShortName(),
-                    campaign.getUrlIdentifier(), campaign.getDescription(),
-                    campaign.getDeadline(), campaign.getStatus(),
-                    campaign.getGoal(), campaign.getRemaining()));
+            homeList.add(new CampaignHome(
+                    campaign.getShortName(), campaign.getUrlIdentifier(),
+                    campaign.getDescription(), campaign.getDeadline(),
+                    campaign.getStatus(), campaign.getGoal(), campaign.getRemaining(),
+                    campaign.getNumLikes(), campaign.getNumDislikes()));
         });
 
         return homeList;
     }
+
     public Like addLike(String campaignUrl, Like like) throws NotFoundException {
         Campaign campaign = this.getCampaign(campaignUrl);
         Like result = campaign.addLike(like);
         campaignRepository.save(campaign);
+
         return result;
     }
 

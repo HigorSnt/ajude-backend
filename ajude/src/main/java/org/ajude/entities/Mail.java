@@ -1,21 +1,17 @@
 package org.ajude.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import java.util.Map;
 
+@AllArgsConstructor
+@NoArgsConstructor
 public class Mail {
 
     private String to;
     private String subject;
     private Map<String, Object> model;
-
-    public Mail() {
-    }
-
-    public Mail(String to, String subject, Map<String, Object> model) {
-        this.to = to;
-        this.subject = subject;
-        this.model = model;
-    }
 
     public String getTo() {
         return to;

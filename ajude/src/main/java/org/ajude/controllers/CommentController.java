@@ -51,10 +51,10 @@ public class CommentController {
         return new ResponseEntity(this.campaignService.addCommentResponse(campaign, commentId, reply), HttpStatus.OK);
     }
 
-    @DeleteMapping("/campaign/{campaignUrl}/comment/{id}" )
+    @DeleteMapping("/campaign/{campaignUrl}/comment/{id}")
     public ResponseEntity deleteComment(@RequestHeader("Authorization") String header,
                                         @PathVariable("campaignUrl") String campaignUrl,
-                                        @PathVariable("id") Long commentId) throws ServletException, UnauthorizedException, NotFoundException     {
+                                        @PathVariable("id") Long commentId) throws ServletException, UnauthorizedException, NotFoundException {
         String email = jwtService.getSubjectByHeader(header);
 
         if (jwtService.userHasPermission(header, email))

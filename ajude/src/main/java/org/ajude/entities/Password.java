@@ -1,15 +1,13 @@
 package org.ajude.entities;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 public class Password {
 
     private String password;
-
-    public Password() {
-    }
-
-    public Password(String password) {
-        this.password = password;
-    }
 
     public String getPassword() {
         return password;
