@@ -42,14 +42,6 @@ public class User {
         this.campaigns = campaigns;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -80,14 +72,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public List<Campaign> getCampaigns() {
-        return campaigns;
-    }
-
-    public void setCampaigns(List<Campaign> campaigns) {
-        this.campaigns = campaigns;
     }
 
     public List<Campaign> getCampaigns() {
