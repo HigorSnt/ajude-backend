@@ -30,7 +30,7 @@ for user in lista_usuarios:
         print(r.raise_for_status())
         print("Erro ao processar requisição")
         print("Usuario: " + user['email'])
-    
+
 
 print()
 
@@ -40,7 +40,7 @@ for user in lista_usuarios:
     try:
         login = {"email": user["email"], "password": user["password"]}
         r = requests.post(url+"/auth/login", json=login)
-        
+
         # Pegar o token
         tokens.append(r.json()['token'])
         print("Usuario", user['email'], "logado")
@@ -57,7 +57,7 @@ for i in range(len(lista_campanhas)):
     auth = tokens[i % len(tokens)]
     campaign = lista_campanhas[i]
     header = {'Authorization': 'Bearer ' + auth}
-        
+
     try:
         r = requests.post(url + "/campaign/register", json=campaign, headers=header)
         print("Campanha", campaign['shortName'], "cadastrada")

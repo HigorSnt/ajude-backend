@@ -14,19 +14,15 @@ import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
-import org.ajude.utils.Status;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class CampaignController {

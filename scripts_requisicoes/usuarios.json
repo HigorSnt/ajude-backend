@@ -1,10 +1,10 @@
-[  
+[
     {
         "firstName": "Mateus",
         "lastName": "Tranquilino",
         "creditCardNumber": "12345678-90",
         "email":"mateus.atranquilino@gmail.com",
-        "password": "12345678"        
+        "password": "12345678"
     },
     {
         "firstName": "Higor",

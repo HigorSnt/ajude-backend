@@ -8,6 +8,7 @@ import org.ajude.entities.Password;
 import org.ajude.entities.User;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -52,9 +53,11 @@ public class LoginController {
         return new ResponseEntity(new LoginResponse(token), HttpStatus.OK);
     }
 
-    @PostMapping("/forgotPassword/{email}")
-    public ResponseEntity<HttpStatus> forgotPassword(@PathVariable String email,
+    @PostMapping("/forgotPassword/")
+    public ResponseEntity<HttpStatus> forgotPassword(@RequestBody JSONObject json,
                                                      @RequestHeader("Authorization") String header) throws ServletException, MessagingException {
+
+        String email = json.get("email").toString();
 
         if (header == null || !header.startsWith("Bearer ") || !this.jwtService.userHasPermission(header, email)) {
 

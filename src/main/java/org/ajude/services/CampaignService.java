@@ -60,7 +60,7 @@ public class CampaignService {
     public List<Campaign> searchCampaigns(String substring) {
         List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCase(substring);
 
-        for (Campaign c: campaigns) {
+        for (Campaign c : campaigns) {
             c.getComments();
             c.getLikeList();
         }

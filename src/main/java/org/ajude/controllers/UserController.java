@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 
-import javax.mail.MessagingException;
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
