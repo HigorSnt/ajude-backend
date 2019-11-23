@@ -57,9 +57,8 @@ public class CampaignService {
         }
     }
 
-    public List<Campaign> searchCampaigns(String substring, Status status) {
-        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCaseAndStatus(substring,
-                status);
+    public List<Campaign> searchCampaigns(String substring) {
+        List<Campaign> campaigns = this.campaignRepository.findByShortNameContainingIgnoreCase(substring);
 
         for (Campaign c: campaigns) {
             c.getComments();

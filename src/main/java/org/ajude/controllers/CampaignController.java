@@ -15,14 +15,18 @@ import org.ajude.services.CampaignService;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
 import org.ajude.utils.Status;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CampaignController {
@@ -68,15 +72,9 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.getCampaign(campaignUrl), HttpStatus.OK);
     }
 
-    @GetMapping("/campaign/search/{substring}")
-    public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable String substring) {
-        return new ResponseEntity(this.campaignService.searchCampaigns(substring, Status.valueOf("A")), HttpStatus.OK);
-    }
-
-    @GetMapping("/campaign/search/{substring}/{status}")
-    public ResponseEntity<List<Campaign>> searchCampaigns(@PathVariable("substring") String substring,
-                                                          @PathVariable("status") String status) {
-        return new ResponseEntity(this.campaignService.searchCampaigns(substring, Status.valueOf(status)), HttpStatus.OK);
+    @GetMapping("/campaign/search/")
+    public ResponseEntity<List<Campaign>> searchCampaigns(@RequestBody JSONObject json) {
+        return new ResponseEntity(this.campaignService.searchCampaigns(json.get("substring").toString()), HttpStatus.OK);
     }
 
     @PutMapping("/campaign/{campaignUrl}/closeCampaign")
