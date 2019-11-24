@@ -13,7 +13,7 @@ import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
