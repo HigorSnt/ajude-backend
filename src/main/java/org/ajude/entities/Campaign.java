@@ -2,6 +2,7 @@ package org.ajude.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.NotFoundException;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Campaign {
 
     @Id
@@ -24,8 +26,8 @@ public class Campaign {
     private String description;
     private Date deadline;
     private Status status;
-    private double goal;
-    private double remaining;
+    private Double goal;
+    private Double remaining;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
@@ -47,6 +49,15 @@ public class Campaign {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
     private List<Dislike> dislikeList;
+
+    public Campaign(String shortName, String description, String urlIdentifier, Date deadline, Double goal, User owner) {
+        this.shortName = shortName;
+        this.description = description;
+        this.urlIdentifier = urlIdentifier;
+        this.deadline = deadline;
+        this.goal = goal;
+        this.owner = owner;
+    }
 
     public Comment addComment(Comment comment) {
         this.comments.add(comment);
@@ -164,16 +175,16 @@ public class Campaign {
     }
 
     private void calculateRemaining() {
-        double sum = 0.0;
+        Double sum = 0.0;
         for (Donation d : donations) sum += d.getValue();
-        this.remaining = goal - sum;
+        this.setRemaining(this.goal - sum);
     }
 
-    public void setRemaining(double remaining) {
+    public void setRemaining(Double remaining) {
         this.remaining = remaining;
     }
 
-    public double getRemaining() {
+    public Double getRemaining() {
         calculateRemaining();
         return remaining;
     }

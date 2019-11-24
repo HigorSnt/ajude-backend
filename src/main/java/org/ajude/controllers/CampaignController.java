@@ -1,9 +1,6 @@
 package org.ajude.controllers;
 
-import org.ajude.dtos.CampaignDeadline;
-import org.ajude.dtos.CampaignGoal;
-import org.ajude.dtos.CampaignHome;
-import org.ajude.dtos.DonationDateValue;
+import org.ajude.dtos.*;
 import org.ajude.entities.Campaign;
 import org.ajude.entities.Dislike;
 import org.ajude.entities.Like;
@@ -55,7 +52,7 @@ public class CampaignController {
 
     @PostMapping("/campaign/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String header,
-                                           @Valid @RequestBody Campaign campaign)
+                                           @Valid @RequestBody CampaignDTO campaign)
             throws ServletException, InvalidGoalException, InvalidDateException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);

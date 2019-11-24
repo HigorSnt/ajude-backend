@@ -1,9 +1,6 @@
 package org.ajude.services;
 
-import org.ajude.dtos.CampaignDeadline;
-import org.ajude.dtos.CampaignGoal;
-import org.ajude.dtos.CampaignHome;
-import org.ajude.dtos.DonationDateValue;
+import org.ajude.dtos.*;
 import org.ajude.entities.*;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
@@ -30,16 +27,20 @@ public class CampaignService {
         this.campaignRepository = campaignRepository;
     }
 
-    public Campaign register(Campaign campaign) throws InvalidDateException, InvalidGoalException {
+    public CampaignDTO register(CampaignDTO campaignDTO) throws InvalidDateException, InvalidGoalException {
 
-        verifyDate(campaign.getDeadline());
-        verifyGoal(campaign.getGoal());
+        verifyDate(campaignDTO.getDeadline());
+        verifyGoal(campaignDTO.getGoal());
 
-        campaign.setRemaining(campaign.getGoal());
+        Campaign campaign = new Campaign(campaignDTO.getShortName(),
+                campaignDTO.getDescription(),campaignDTO.getUrlIdentifier(),
+                campaignDTO.getDeadline(), campaignDTO.getGoal(), campaignDTO.getOwner());
+
+        campaign.setRemaining(campaignDTO.getGoal());
         campaign.setStatus(Status.A);
         this.campaignRepository.save(campaign);
 
-        return campaign;
+        return campaignDTO;
     }
 
     public Campaign getCampaign(String urlIdentifier) throws NotFoundException {
