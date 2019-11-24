@@ -68,7 +68,7 @@ public class CampaignController {
         return new ResponseEntity(this.campaignService.getCampaign(campaignUrl), HttpStatus.OK);
     }
 
-    @GetMapping("/campaign/search/")
+    @PostMapping("/campaign/search/")
     public ResponseEntity<List<Campaign>> searchCampaigns(@RequestBody JSONObject json) {
         return new ResponseEntity(this.campaignService.searchCampaigns(json.get("substring").toString()), HttpStatus.OK);
     }
