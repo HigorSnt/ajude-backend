@@ -163,7 +163,7 @@ public class Campaign {
         this.dislikeList = dislikeList;
     }
 
-    private void setRemaining() {
+    private void calculateRemaining() {
         double sum = 0.0;
         for (Donation d : donations) sum += d.getValue();
         this.remaining = goal - sum;
@@ -174,7 +174,7 @@ public class Campaign {
     }
 
     public double getRemaining() {
-        setRemaining();
+        calculateRemaining();
         return remaining;
     }
 
@@ -197,7 +197,7 @@ public class Campaign {
 
     public void addDonation(Donation donation) {
         donations.add(donation);
-        setRemaining();
+        calculateRemaining();
     }
 
     public Like addLike(Like like) {
