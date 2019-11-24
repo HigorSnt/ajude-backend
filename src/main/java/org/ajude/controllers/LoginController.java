@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
 public class LoginController {
 
     @Value("${jwt.key}")
@@ -36,7 +35,7 @@ public class LoginController {
         this.jwtService = jwtService;
     }
 
-    @PostMapping("/login")
+    @PostMapping("auth/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody Login user) {
         Optional<User> authUser = this.userService.getUserByEmail(user.getEmail());
 
@@ -53,23 +52,20 @@ public class LoginController {
         return new ResponseEntity(new LoginResponse(token), HttpStatus.OK);
     }
 
-    @PostMapping("/forgotPassword/")
-    public ResponseEntity<HttpStatus> forgotPassword(@RequestBody JSONObject json,
-                                                     @RequestHeader("Authorization") String header) throws ServletException, MessagingException {
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<HttpStatus> forgotPassword(@RequestBody JSONObject json)
+            throws ServletException, MessagingException {
 
         String email = json.get("email").toString();
 
-        if (header == null || !header.startsWith("Bearer ") || !this.jwtService.userHasPermission(header, email)) {
+        if (this.userService.getUserByEmail(email).get() != null) {
+            String temporaryToken = buildToken(email, 1);
+            this.userService.forgotPassword(email, temporaryToken);
 
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity(HttpStatus.OK);
         }
 
-        String subject = this.jwtService.getSubjectByHeader(header);
-
-        String temporaryToken = buildToken(subject, 1);
-        this.userService.forgotPassword(subject, temporaryToken);
-
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/resetPassword/{token}")
