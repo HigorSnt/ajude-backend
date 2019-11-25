@@ -93,4 +93,13 @@ public class UserService {
         return username;
     }
 
+    public UserProfile getUserProfile(String userEmail) throws NotFoundException {
+        Optional<User> optionalUser = this.getUserByEmail(userEmail);
+        if (optionalUser.isEmpty()){
+            throw new NotFoundException("USER " + userEmail + " WAS NOT FOUND");
+        }
+
+        User u = optionalUser.get();
+        return new UserProfile(u.getEmail(), u.getFirstName(), u.getLastName(), u.getUsername());
+    }
 }

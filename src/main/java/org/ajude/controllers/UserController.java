@@ -7,6 +7,7 @@ import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.services.JwtService;
 import org.ajude.services.UserService;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,9 @@ public class UserController {
         return new ResponseEntity<>(this.userService.createUser(user), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<UserProfile> getUser(@PathVariable String username) throws NotFoundException {
-        return new ResponseEntity(this.userService.getUserByUsername(username), HttpStatus.OK);
+    @PostMapping("/profile")
+    public ResponseEntity<UserProfile> getUser(@RequestBody JSONObject json) throws NotFoundException {
+        return new ResponseEntity(this.userService.getUserProfile(json.get("userEmail").toString()), HttpStatus.OK);
     }
 }
 
