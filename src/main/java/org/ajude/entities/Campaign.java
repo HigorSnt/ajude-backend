@@ -1,5 +1,6 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.utils.Status;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -24,6 +26,7 @@ public class Campaign {
     private String shortName;
     private String urlIdentifier;
     private String description;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date deadline;
     private Status status;
     private Double goal;

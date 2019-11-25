@@ -1,5 +1,6 @@
 package org.ajude.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.ajude.entities.User;
 import org.ajude.utils.Status;
 
@@ -9,6 +10,7 @@ public class CampaignDTO {
     private String shortName;
     private String urlIdentifier;
     private String description;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date deadline;
     private Double goal;
     private User owner;
