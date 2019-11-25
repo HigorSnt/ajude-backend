@@ -103,9 +103,10 @@ public class CampaignController {
     @PostMapping("/campaign/{campaignUrl}/donate")
     public ResponseEntity<Campaign> donate(@RequestHeader("Authorization") String header,
                                            @PathVariable("campaignUrl") String campaignUrl,
-                                           @RequestBody DonationDateValue donationDTO) throws ServletException, NotFoundException {
+                                           @RequestBody JSONObject json) throws ServletException, NotFoundException {
         String email = jwtService.getSubjectByHeader(header);
-        return new ResponseEntity(this.campaignService.donate(campaignUrl, userService.getUserByEmail(email).get(), donationDTO), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.donate(
+                campaignUrl, userService.getUserByEmail(email).get(), Double.parseDouble(json.get("value").toString())), HttpStatus.CREATED);
     }
 
 

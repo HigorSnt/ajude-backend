@@ -155,6 +155,8 @@ public class CampaignService {
     }
 
     private void verifyDate(Date deadline) throws InvalidDateException {
+        System.out.println("Deadline -> " + deadline.toString());
+        System.out.println("Hoje -> " + Date.from(Instant.now()));
         if (deadline.before(Date.from(Instant.now()))) {
             throw new InvalidDateException("Date needs to be in the future");
         }
@@ -180,9 +182,9 @@ public class CampaignService {
     }
 
     public Campaign donate(String campaignURL, User user,
-                           DonationDateValue donationDTO) throws NotFoundException {
+                           Double value) throws NotFoundException {
 
-        Donation donation = new Donation(donationDTO.getValue(), user, donationDTO.getDate());
+        Donation donation = new Donation(value, user, Date.from(Instant.now()));
         Campaign campaign = this.getCampaign(campaignURL);
 
         campaign.addDonation(donation);
@@ -203,7 +205,7 @@ public class CampaignService {
     }
 
     public List<CampaignHome> getCampaignHomeByLike() {
-        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByLikes(Status.A);
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByLikes();
 
         return transformCampaignsToCampaignsHome(campaigns);
     }

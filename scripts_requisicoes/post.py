@@ -61,6 +61,7 @@ for i in range(len(lista_campanhas)):
     try:
         r = requests.post(url + "/campaign/register", json=campaign, headers=header)
         print("Campanha", campaign['shortName'], "cadastrada")
+        print(r.status_code)
     except:
         print(r.raise_for_status())
         print("Erro ao processar requisição")
