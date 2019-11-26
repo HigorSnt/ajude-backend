@@ -32,7 +32,7 @@ public class StatusChecker {
 
         campaigns.forEach(c -> {
             if (c.getDeadline().before(Date.from(Instant.now()))) {
-                if (c.getGoal() >= c.getRemaining())
+                if (c.getReceived() >= c.getGoal())
                     c.setStatus(Status.F);
                 else
                     c.setStatus(Status.E);

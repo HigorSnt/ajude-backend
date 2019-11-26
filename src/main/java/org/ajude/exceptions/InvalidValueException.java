@@ -1,7 +1,7 @@
 package org.ajude.exceptions;
 
-public class InvalidGoalException extends Exception {
-    public InvalidGoalException(String message) {
+public class InvalidValueException extends Exception {
+    public InvalidValueException(String message) {
         super(message);
     }
 }

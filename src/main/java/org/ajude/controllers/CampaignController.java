@@ -5,7 +5,7 @@ import org.ajude.entities.Campaign;
 import org.ajude.entities.Dislike;
 import org.ajude.entities.Like;
 import org.ajude.exceptions.InvalidDateException;
-import org.ajude.exceptions.InvalidGoalException;
+import org.ajude.exceptions.InvalidValueException;
 import org.ajude.exceptions.NotFoundException;
 import org.ajude.exceptions.UnauthorizedException;
 import org.ajude.services.CampaignService;
@@ -35,9 +35,9 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/home/remaining")
-    public ResponseEntity<List<CampaignDTO>> getCampaignHomeByRemaining() {
-        return new ResponseEntity(this.campaignService.getCampaignHomeByRemaining(), HttpStatus.OK);
+    @GetMapping("/home/received")
+    public ResponseEntity<List<CampaignDTO>> getCampaignHomeByReceived() {
+        return new ResponseEntity(this.campaignService.getCampaignHomeByReceived(), HttpStatus.OK);
     }
 
     @GetMapping("/home/date")
@@ -53,7 +53,7 @@ public class CampaignController {
     @PostMapping("/campaign/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String header,
                                            @Valid @RequestBody CampaignRegister campaign)
-            throws ServletException, InvalidGoalException, InvalidDateException {
+            throws ServletException, InvalidValueException, InvalidDateException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
         campaign.setOwner(this.userService.getUserByEmail(userEmail).get());
@@ -93,7 +93,7 @@ public class CampaignController {
     public ResponseEntity setGoal(@RequestHeader("Authorization") String header,
                                   @PathVariable("campaignUrl") String campaignUrl,
                                   @RequestBody CampaignGoal newGoal)
-            throws ServletException, UnauthorizedException, InvalidDateException, NotFoundException, InvalidGoalException {
+            throws ServletException, UnauthorizedException, InvalidDateException, NotFoundException, InvalidValueException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);
         return new ResponseEntity(this.campaignService.setGoal(campaignUrl, newGoal, userEmail), HttpStatus.OK);
@@ -103,7 +103,7 @@ public class CampaignController {
     @PostMapping("/campaign/{campaignUrl}/donate")
     public ResponseEntity<Campaign> donate(@RequestHeader("Authorization") String header,
                                            @PathVariable("campaignUrl") String campaignUrl,
-                                           @RequestBody JSONObject json) throws ServletException, NotFoundException {
+                                           @RequestBody JSONObject json) throws ServletException, NotFoundException, InvalidValueException {
         String email = jwtService.getSubjectByHeader(header);
         return new ResponseEntity(this.campaignService.donate(
                 campaignUrl, userService.getUserByEmail(email).get(), Double.parseDouble(json.get("value").toString())), HttpStatus.CREATED);

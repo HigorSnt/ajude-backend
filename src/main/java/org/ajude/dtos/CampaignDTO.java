@@ -28,12 +28,12 @@ public class CampaignDTO {
     private ZonedDateTime registerDateTime;
     private Status status;
     private double goal;
-    private double remaining;
+    private double received;
     private int likes;
     private int dislikes;
 
     public CampaignDTO(String shortName, String urlIdentifier, String description, Date deadline, ZonedDateTime registerDateTime,
-                       Status status, double goal, double remaining, int likes, int dislikes) {
+                       Status status, double goal, double received, int likes, int dislikes) {
         this.shortName = shortName;
         this.urlIdentifier = urlIdentifier;
         this.description = description;
@@ -41,7 +41,7 @@ public class CampaignDTO {
         this.registerDateTime = registerDateTime;
         this.status = status;
         this.goal = goal;
-        this.remaining = remaining;
+        this.received = received;
         this.likes = likes;
         this.dislikes = dislikes;
     }

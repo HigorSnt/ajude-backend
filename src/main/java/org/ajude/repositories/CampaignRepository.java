@@ -15,7 +15,7 @@ public interface CampaignRepository<T, Long> extends JpaRepository<Campaign, Lon
 
     List<Campaign> findByShortNameContainingIgnoreCase(String substring);
 
-    List<Campaign> findTop5ByStatusOrderByRemainingDesc(Status status);
+    List<Campaign> findTop5ByStatusOrderByReceivedDesc(Status status);
 
     List<Campaign> findTop5ByStatusOrderByDeadlineAsc(Status status);
 

@@ -39,8 +39,7 @@ public class Campaign {
     private ZonedDateTime registerDateTime;
     private Status status;
     private Double goal;
-    private Double remaining;
-
+    private Double received;
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JsonIgnore
     private User owner;
@@ -48,11 +47,6 @@ public class Campaign {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
     private List<Comment> comments;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "idCampaign")
-    @JsonIgnore
-    private List<Donation> donations;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "idCampaign")
@@ -69,6 +63,18 @@ public class Campaign {
         this.deadline = deadline;
         this.goal = goal;
         this.owner = owner;
+    }
+
+    public void setGoal(Double goal) {
+        this.goal = goal;
+    }
+
+    public Double getReceived() {
+        return received;
+    }
+
+    public void setReceived(Double received) {
+        this.received = received;
     }
 
     public Comment addComment(Comment comment) {
@@ -186,20 +192,6 @@ public class Campaign {
         this.dislikeList = dislikeList;
     }
 
-    private void calculateRemaining() {
-        Double sum = 0.0;
-        for (Donation d : donations) sum += d.getValue();
-        this.setRemaining(this.goal - sum);
-    }
-
-    public void setRemaining(Double remaining) {
-        this.remaining = remaining;
-    }
-
-    public Double getRemaining() {
-        calculateRemaining();
-        return remaining;
-    }
 
     public List<Comment> getComments() {
         List<Comment> c = new ArrayList<>(List.copyOf(this.comments));
@@ -220,11 +212,6 @@ public class Campaign {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public void addDonation(Donation donation) {
-        donations.add(donation);
-        calculateRemaining();
     }
 
     public Like addLike(Like like) {
@@ -260,14 +247,6 @@ public class Campaign {
     }
 
 
-    public List<Donation> getDonations() {
-        return donations;
-    }
-
-    public void setDonations(List<Donation> donations) {
-        this.donations = donations;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -284,5 +263,9 @@ public class Campaign {
         int result = id.hashCode();
         result = 31 * result + shortName.hashCode();
         return result;
+    }
+
+    public void addDonatio(Double value) {
+        this.setReceived(received+value);
     }
 }

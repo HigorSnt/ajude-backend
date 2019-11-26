@@ -1,5 +1,7 @@
 package org.ajude.dtos;
 
+import org.ajude.entities.Donation;
+
 import java.util.List;
 
 public class UserProfile {
@@ -9,13 +11,16 @@ public class UserProfile {
     private String lastName;
     private String username;
     private List<CampaignDTO> campaignList;
+    private List<Donation> donations;
 
-    public UserProfile(String email, String firstName, String lastName, String username, List<CampaignDTO> campaignList) {
+    public UserProfile(String email, String firstName, String lastName, String username,
+                       List<CampaignDTO> campaignList, List<Donation> donations) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
         this.campaignList = campaignList;
+        this.donations = donations;
     }
 
     public List<CampaignDTO> getCampaignList() {
@@ -56,5 +61,13 @@ public class UserProfile {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public List<Donation> getDonations() {
+        return donations;
+    }
+
+    public void setDonations(List<Donation> donations) {
+        this.donations = donations;
     }
 }

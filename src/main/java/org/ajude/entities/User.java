@@ -22,6 +22,11 @@ public class User {
     private String creditCardNumber;
     private String username;
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idUser")
+    @JsonIgnore
+    private List<Donation> donations;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "owner", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Campaign> campaigns;
@@ -94,5 +99,17 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(email);
+    }
+
+    public void addDonation(Donation donation) {
+        this.donations.add(donation);
+    }
+
+    public List<Donation> getDonations() {
+        return donations;
+    }
+
+    public void setDonations(List<Donation> donations) {
+        this.donations = donations;
     }
 }

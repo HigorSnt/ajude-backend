@@ -98,9 +98,10 @@ public class UserService {
 
         for (Campaign c : u.getCampaigns())
             campaignList.add(new CampaignDTO(c.getShortName(), c.getUrlIdentifier(), c.getDescription(),
-                    c.getDeadline(), c.getRegisterDateTime(), c.getStatus(),c.getGoal(), c.getRemaining(), c.getNumLikes(), c.getNumDislikes()));
+                    c.getDeadline(), c.getRegisterDateTime(), c.getStatus(),c.getGoal(), c.getReceived(),
+                    c.getNumLikes(), c.getNumDislikes()));
 
         Collections.reverse(campaignList);
-        return new UserProfile(u.getEmail(), u.getFirstName(), u.getLastName(), u.getUsername(), campaignList);
+        return new UserProfile(u.getEmail(), u.getFirstName(), u.getLastName(), u.getUsername(), campaignList, u.getDonations());
     }
 }

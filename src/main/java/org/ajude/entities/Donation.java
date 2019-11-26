@@ -1,8 +1,12 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.ajude.dtos.CampaignDTO;
 import org.ajude.dtos.UserNameEmail;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Entity
@@ -14,17 +18,30 @@ public class Donation {
     private Double value;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "idUser")
-    private User donor;
-    private Date date;
+    @JoinColumn(name = "idCampaign")
+    @JsonIgnore
+    private Campaign campaign;
 
-    public Donation() {
+    @JsonIgnore
+    private ZonedDateTime date;
+
+
+    public Donation(Double value, Campaign campaign, ZonedDateTime date) {
+        this.value = value;
+        this.campaign = campaign;
+        this.date = date;
     }
 
-    public Donation(Double value, User donor, Date date) {
-        this.value = value;
-        this.donor = donor;
-        this.date = date;
+    public Donation(){
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getValue() {
@@ -35,24 +52,31 @@ public class Donation {
         this.value = value;
     }
 
-    public UserNameEmail getDonor() {
-        return new UserNameEmail(
-                this.donor.getEmail(),
-                this.donor.getFirstName(),
-                this.donor.getLastName(),
-                this.donor.getUsername()
-        );
+    public Campaign getCampaign() {
+        return campaign;
     }
 
-    public void setDonor(User donor) {
-        this.donor = donor;
+    public CampaignDTO getCampaignTarget(){
+        return new CampaignDTO(this.campaign.getShortName(), this.campaign.getUrlIdentifier(),
+                campaign.getDescription(), this.campaign.getDeadline(),
+                campaign.getRegisterDateTime(),campaign.getStatus(), campaign.getGoal(),
+                campaign.getReceived(), campaign.getNumLikes(), campaign.getNumDislikes());
     }
 
-    public Date getDate() {
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
+    public ZonedDateTime getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public String getDonationDate(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return this.date.minusHours(3).format(formatter);
+    }
+
+    public void setDate(ZonedDateTime date) {
         this.date = date;
     }
 }
