@@ -87,10 +87,11 @@ public class UserService {
         return username;
     }
 
-    public UserProfile getUserProfile(String userEmail) throws NotFoundException {
-        Optional<User> optionalUser = this.getUserByEmail(userEmail);
+    public UserProfile getUserProfile(String username) throws NotFoundException {
+        Optional<User> optionalUser = this.userRepository.findByUsername(username);
+
         if (optionalUser.isEmpty()){
-            throw new NotFoundException("USER " + userEmail + " WAS NOT FOUND");
+            throw new NotFoundException("USER " + username + " WAS NOT FOUND");
         }
 
         User u = optionalUser.get();

@@ -20,7 +20,6 @@ import javax.mail.MessagingException;
 public class UserController {
 
     private UserService userService;
-    private JwtService jwtService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -34,7 +33,7 @@ public class UserController {
 
     @PostMapping("/profile")
     public ResponseEntity<UserProfile> getUser(@RequestBody JSONObject json) throws NotFoundException {
-        return new ResponseEntity(this.userService.getUserProfile(json.get("userEmail").toString()), HttpStatus.OK);
+        return new ResponseEntity(this.userService.getUserProfile(json.get("username").toString()), HttpStatus.OK);
     }
 }
 
