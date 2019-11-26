@@ -1,7 +1,9 @@
 package org.ajude.services;
 
+import org.ajude.dtos.CampaignDTO;
 import org.ajude.dtos.UserNameEmail;
 import org.ajude.dtos.UserProfile;
+import org.ajude.entities.Campaign;
 import org.ajude.entities.User;
 import org.ajude.exceptions.EmailAlreadyRegisteredException;
 import org.ajude.exceptions.NotFoundException;
@@ -11,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -28,17 +33,6 @@ public class UserService {
 
     public Optional<User> getUserByEmail(String email) {
         return this.userRepository.findById(email);
-    }
-
-    public UserProfile getUserByUsername(String username) throws NotFoundException {
-        User u = this.userRepository.findByUsername(username).get();
-
-        if (u != null) {
-            return new UserProfile(u.getEmail(), u.getFirstName(),
-                    u.getLastName(), u.getEmail());
-        } else {
-            throw new NotFoundException("The user " + username + " was not found.");
-        }
     }
 
     public UserNameEmail createUser(User user) throws EmailAlreadyRegisteredException, MessagingException {
@@ -100,6 +94,13 @@ public class UserService {
         }
 
         User u = optionalUser.get();
-        return new UserProfile(u.getEmail(), u.getFirstName(), u.getLastName(), u.getUsername());
+        List<CampaignDTO> campaignList = new ArrayList<>();
+
+        for (Campaign c : u.getCampaigns())
+            campaignList.add(new CampaignDTO(c.getShortName(), c.getUrlIdentifier(), c.getDescription(),
+                    c.getDeadline(), c.getRegisterDateTime(), c.getStatus(),c.getGoal(), c.getRemaining(), c.getNumLikes(), c.getNumDislikes()));
+
+        Collections.reverse(campaignList);
+        return new UserProfile(u.getEmail(), u.getFirstName(), u.getLastName(), u.getUsername(), campaignList);
     }
 }

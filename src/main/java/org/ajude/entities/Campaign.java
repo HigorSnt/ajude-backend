@@ -11,6 +11,10 @@ import org.ajude.utils.Status;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +34,9 @@ public class Campaign {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date deadline;
+
+    @JsonIgnore
+    private ZonedDateTime registerDateTime;
     private Status status;
     private Double goal;
     private Double remaining;
@@ -195,7 +202,11 @@ public class Campaign {
     }
 
     public List<Comment> getComments() {
-        return comments;
+        List<Comment> c = new ArrayList<>(List.copyOf(this.comments));
+        c.sort(Comparator.comparing(Comment::getPostedAt));
+
+
+        return c;
     }
 
     public Comment lastCommentAdded() {
@@ -238,6 +249,23 @@ public class Campaign {
         }
 
         return dislike;
+    }
+
+    public ZonedDateTime getRegisterDateTime(){
+        return this.registerDateTime;
+    }
+
+    public void setRegisterDateTime(ZonedDateTime registerDateTime) {
+        this.registerDateTime = registerDateTime;
+    }
+
+
+    public List<Donation> getDonations() {
+        return donations;
+    }
+
+    public void setDonations(List<Donation> donations) {
+        this.donations = donations;
     }
 
     @Override

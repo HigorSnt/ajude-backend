@@ -3,35 +3,35 @@
         "firstName": "Mateus",
         "lastName": "Tranquilino",
         "creditCardNumber": "12345678-90",
-        "email":"mateus.atranquilino@gmail.com",
+        "email": "mateus.atranquilino@gmail.com",
         "password": "12345678"
     },
     {
         "firstName": "Higor",
         "lastName": "Dantas",
         "creditCardNumber": "00000000-00",
-        "email":"higorsantos600@gmail.com",
+        "email": "higorsantos600@gmail.com",
         "password": "Senha123"
     },
     {
         "firstName": "João",
         "lastName": "ÉotaldoJoão hehehe",
         "creditCardNumber": "00000000-00",
-        "email":"higorsantos_36@hotmail.com",
+        "email": "higorsantos_36@hotmail.com",
         "password": "sei.la@"
     },
     {
         "firstName": "Pedro",
         "lastName": "Pedrão",
         "creditCardNumber": "00000000-00",
-        "email":"higor.dantas@ccc.ufcg.edu.br",
+        "email": "higor.dantas@ccc.ufcg.edu.br",
         "password": "abc125"
     },
     {
         "firstName": "Izaquiel",
         "lastName": "Cordeiro",
         "creditCardNumber": "1651564151",
-        "email":"izaquiel.cordeiro@ccc.ufcg.edu.br",
+        "email": "izaquiel.cordeiro@ccc.ufcg.edu.br",
         "password": "120325"
     }
 ]

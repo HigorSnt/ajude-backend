@@ -1,6 +1,9 @@
 package org.ajude.services;
 
-import org.ajude.dtos.*;
+import org.ajude.dtos.CampaignRegister;
+import org.ajude.dtos.CampaignDeadline;
+import org.ajude.dtos.CampaignGoal;
+import org.ajude.dtos.CampaignDTO;
 import org.ajude.entities.*;
 import org.ajude.exceptions.InvalidDateException;
 import org.ajude.exceptions.InvalidGoalException;
@@ -12,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,20 +32,21 @@ public class CampaignService {
         this.campaignRepository = campaignRepository;
     }
 
-    public CampaignDTO register(CampaignDTO campaignDTO) throws InvalidDateException, InvalidGoalException {
+    public CampaignRegister register(CampaignRegister campaignRegister) throws InvalidDateException, InvalidGoalException {
 
-        verifyDate(campaignDTO.getDeadline());
-        verifyGoal(campaignDTO.getGoal());
+        verifyDate(campaignRegister.getDeadline());
+        verifyGoal(campaignRegister.getGoal());
 
-        Campaign campaign = new Campaign(campaignDTO.getShortName(),
-                campaignDTO.getDescription(),campaignDTO.getUrlIdentifier(),
-                campaignDTO.getDeadline(), campaignDTO.getGoal(), campaignDTO.getOwner());
+        Campaign campaign = new Campaign(campaignRegister.getShortName(),
+                campaignRegister.getDescription(), campaignRegister.getUrlIdentifier(),
+                campaignRegister.getDeadline(), campaignRegister.getGoal(), campaignRegister.getOwner());
 
-        campaign.setRemaining(campaignDTO.getGoal());
+        campaign.setRemaining(campaignRegister.getGoal());
         campaign.setStatus(Status.A);
+        campaign.setRegisterDateTime(ZonedDateTime.now(ZoneId.of("UTC")));
         this.campaignRepository.save(campaign);
 
-        return campaignDTO;
+        return campaignRegister;
     }
 
     public Campaign getCampaign(String urlIdentifier) throws NotFoundException {
@@ -85,35 +91,25 @@ public class CampaignService {
     }
 
     public Comment addCampaignComment(String campaignUrl, Comment comment) throws NotFoundException {
-        Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
+        Campaign campaign = this.getCampaign(campaignUrl);
+        comment.setPostedAt(ZonedDateTime.now(ZoneId.of("UTC")));
+        System.out.println(comment.getPostedAt());
+        campaign.addComment(comment);
+        campaign.getComments();
+        campaign.getLikeList();
 
-        if (!campaignOptional.isEmpty()) {
-            Campaign campaign = campaignOptional.get();
-            campaign.addComment(comment);
-            campaign.getComments();
-            campaign.getLikeList();
-
-            campaign = this.campaignRepository.save(campaign);
-
-            return campaign.lastCommentAdded();
-
-        } else {
-            throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
-        }
+        campaign = this.campaignRepository.save(campaign);
+        return campaign.lastCommentAdded();
     }
 
     public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws NotFoundException {
-        Optional<Campaign> campaignOptional = this.campaignRepository.findByUrlIdentifier(campaignUrl);
-        if (!campaignOptional.isEmpty()) {
-            Campaign campaign = campaignOptional.get();
-            Comment comment = campaign.addCommentResponse(commentId, reply);
+        Campaign campaign = this.getCampaign(campaignUrl);
+        reply.setPostedAt(ZonedDateTime.now(ZoneId.of("UTC")));
+        System.out.println(reply.getPostedAt());
+        Comment comment = campaign.addCommentResponse(commentId, reply);
 
-            this.campaignRepository.save(campaign);
-
-            return comment;
-        } else {
-            throw new NotFoundException("The Campaign " + campaignUrl + " was not found");
-        }
+        this.campaignRepository.save(campaign);
+        return comment;
     }
 
     public Campaign setDeadline(String campaignUrl, CampaignDeadline newDeadline, String userEmail)
@@ -155,8 +151,7 @@ public class CampaignService {
     }
 
     private void verifyDate(Date deadline) throws InvalidDateException {
-        System.out.println("Deadline -> " + deadline.toString());
-        System.out.println("Hoje -> " + Date.from(Instant.now()));
+
         if (deadline.before(Date.from(Instant.now()))) {
             throw new InvalidDateException("Date needs to be in the future");
         }
@@ -192,31 +187,31 @@ public class CampaignService {
         return campaign;
     }
 
-    public List<CampaignHome> getCampaignHomeByRemaining() {
+    public List<CampaignDTO> getCampaignHomeByRemaining() {
         List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByRemainingDesc(Status.A);
 
         return transformCampaignsToCampaignsHome(campaigns);
     }
 
-    public List<CampaignHome> getCampaignHomeByDate() {
+    public List<CampaignDTO> getCampaignHomeByDate() {
         List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByDeadlineAsc(Status.A);
 
         return transformCampaignsToCampaignsHome(campaigns);
     }
 
-    public List<CampaignHome> getCampaignHomeByLike() {
+    public List<CampaignDTO> getCampaignHomeByLike() {
         List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByLikes();
 
         return transformCampaignsToCampaignsHome(campaigns);
     }
 
-    private List<CampaignHome> transformCampaignsToCampaignsHome(List<Campaign> campaigns) {
-        List<CampaignHome> homeList = new ArrayList<>();
+    private List<CampaignDTO> transformCampaignsToCampaignsHome(List<Campaign> campaigns) {
+        List<CampaignDTO> homeList = new ArrayList<>();
 
         campaigns.forEach(campaign -> {
-            homeList.add(new CampaignHome(
+            homeList.add(new CampaignDTO(
                     campaign.getShortName(), campaign.getUrlIdentifier(),
-                    campaign.getDescription(), campaign.getDeadline(),
+                    campaign.getDescription(), campaign.getDeadline(), campaign.getRegisterDateTime(),
                     campaign.getStatus(), campaign.getGoal(), campaign.getRemaining(),
                     campaign.getNumLikes(), campaign.getNumDislikes()));
         });

@@ -13,10 +13,11 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 
+import javax.annotation.PostConstruct;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @SpringBootApplication
-@CrossOrigin
 public class AjudeApplication {
 
     @Bean
@@ -27,6 +28,22 @@ public class AjudeApplication {
         filterRegistrationBean.addUrlPatterns("/campaign/*");
 
         return filterRegistrationBean;
+    }
+
+    @Bean
+    public FilterRegistrationBean corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
+        bean.setOrder(0);
+        return bean;
+    }
+
+    @PostConstruct
+    public void started() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC+3"));
     }
 
     public static void main(String[] args) {

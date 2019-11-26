@@ -1,11 +1,14 @@
 package org.ajude.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.ajude.dtos.UserNameEmail;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @AllArgsConstructor
@@ -17,6 +20,9 @@ public class Comment {
     private Long id;
     private String comment;
     private boolean isDeleted;
+
+    @JsonIgnore
+    private ZonedDateTime postedAt;
 
     @OneToOne(fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.ALL})
@@ -85,5 +91,18 @@ public class Comment {
             return 1;
         } else if (this.reply != null) reply.recursiveDelete(owner, idComment);
         return 0;
+    }
+
+    public String getPostedDate() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return this.postedAt.minusHours(3).format(formatter);
+    }
+
+    public void setPostedAt(ZonedDateTime postedAt) {
+        this.postedAt = postedAt;
+    }
+
+    public ZonedDateTime getPostedAt() {
+        return this.postedAt;
     }
 }

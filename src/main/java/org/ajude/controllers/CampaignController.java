@@ -36,23 +36,23 @@ public class CampaignController {
     }
 
     @GetMapping("/home/remaining")
-    public ResponseEntity<List<CampaignHome>> getCampaignHomeByRemaining() {
+    public ResponseEntity<List<CampaignDTO>> getCampaignHomeByRemaining() {
         return new ResponseEntity(this.campaignService.getCampaignHomeByRemaining(), HttpStatus.OK);
     }
 
     @GetMapping("/home/date")
-    public ResponseEntity<List<CampaignHome>> getCampaignHomeByDate() {
+    public ResponseEntity<List<CampaignDTO>> getCampaignHomeByDate() {
         return new ResponseEntity(this.campaignService.getCampaignHomeByDate(), HttpStatus.OK);
     }
 
     @GetMapping("/home/like")
-    public ResponseEntity<List<CampaignHome>> getCampaignHomeByLike() {
+    public ResponseEntity<List<CampaignDTO>> getCampaignHomeByLike() {
         return new ResponseEntity(this.campaignService.getCampaignHomeByLike(), HttpStatus.OK);
     }
 
     @PostMapping("/campaign/register")
     public ResponseEntity registerCampaign(@RequestHeader("Authorization") String header,
-                                           @Valid @RequestBody CampaignDTO campaign)
+                                           @Valid @RequestBody CampaignRegister campaign)
             throws ServletException, InvalidGoalException, InvalidDateException {
 
         String userEmail = this.jwtService.getSubjectByHeader(header);

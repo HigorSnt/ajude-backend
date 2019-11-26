@@ -1,81 +1,53 @@
 package org.ajude.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.ajude.entities.User;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.ajude.utils.Status;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@Getter
+@Setter
 public class CampaignDTO {
+
     private String shortName;
     private String urlIdentifier;
     private String description;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Temporal(TemporalType.DATE)
     private Date deadline;
-    private Double goal;
-    private User owner;
+    @Getter(AccessLevel.NONE)
+    private ZonedDateTime registerDateTime;
+    private Status status;
+    private double goal;
+    private double remaining;
+    private int likes;
+    private int dislikes;
 
-    public CampaignDTO(String shortName, String urlIdentifier, String description, Date deadline, Double goal, User owner) {
+    public CampaignDTO(String shortName, String urlIdentifier, String description, Date deadline, ZonedDateTime registerDateTime,
+                       Status status, double goal, double remaining, int likes, int dislikes) {
         this.shortName = shortName;
         this.urlIdentifier = urlIdentifier;
         this.description = description;
         this.deadline = deadline;
+        this.registerDateTime = registerDateTime;
+        this.status = status;
         this.goal = goal;
-        this.owner = owner;
+        this.remaining = remaining;
+        this.likes = likes;
+        this.dislikes = dislikes;
     }
 
-    public CampaignDTO() {
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public String getUrlIdentifier() {
-        return urlIdentifier;
-    }
-
-    public void setUrlIdentifier(String urlIdentifier) {
-        this.urlIdentifier = urlIdentifier;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Date getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(Date deadline) {
-        this.deadline = deadline;
-    }
-
-    public Double getGoal() {
-        return goal;
-    }
-
-    public void setGoal(Double goal) {
-        this.goal = goal;
+    public String getRegisterDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return this.registerDateTime.minusHours(3).format(formatter);
     }
 }
