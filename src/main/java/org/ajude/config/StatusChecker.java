@@ -16,10 +16,9 @@ import java.util.List;
 @EnableScheduling
 public class StatusChecker {
 
-
     private CampaignRepository<Long, Campaign> campaignRepository;
-    //                    hours * minutes * seconds * miliseconds
-    private final int interval = 24 * 60 * 60 * 1000;
+    //                     minutes * seconds * miliseconds
+    private final int interval = 20 * 60 * 1000;
 
     @Autowired
     public StatusChecker(CampaignRepository<Long, Campaign> campaignRepository) {

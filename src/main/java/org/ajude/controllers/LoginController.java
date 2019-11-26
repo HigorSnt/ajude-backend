@@ -49,7 +49,7 @@ public class LoginController {
 
         String token = buildToken(authUser.get().getEmail(), 30);
 
-        return new ResponseEntity(new LoginResponse(token), HttpStatus.OK);
+        return new ResponseEntity(new LoginResponse(token, authUser.get().getUsername()), HttpStatus.OK);
     }
 
     @PostMapping("/forgotPassword")
@@ -91,9 +91,11 @@ public class LoginController {
 
     private class LoginResponse {
         public String token;
+        public String username;
 
-        public LoginResponse(String token) {
+        public LoginResponse(String token, String username) {
             this.token = token;
+            this.username = username;
         }
 
         public String getToken() {
@@ -102,6 +104,14 @@ public class LoginController {
 
         public void setToken(String token) {
             this.token = token;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
         }
     }
 }
