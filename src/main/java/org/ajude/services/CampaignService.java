@@ -184,8 +184,8 @@ public class CampaignService {
         return donation;
     }
 
-    public List<CampaignDTO> getCampaignHomeByReceived() {
-        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByReceivedDesc(Status.A);
+    public List<CampaignDTO> getCampaignHomeByRemaining() {
+        List<Campaign> campaigns = this.campaignRepository.findTop5ByStatusOrderByRemaining(Status.A);
 
         return transformCampaignsToCampaignsHome(campaigns);
     }

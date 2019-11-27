@@ -15,9 +15,11 @@ public interface CampaignRepository<T, Long> extends JpaRepository<Campaign, Lon
 
     List<Campaign> findByShortNameContainingIgnoreCase(String substring);
 
-    List<Campaign> findTop5ByStatusOrderByReceivedDesc(Status status);
-
     List<Campaign> findTop5ByStatusOrderByDeadlineAsc(Status status);
+
+    @Query(value = "SELECT *, (goal - received) as remaining FROM campaign " +
+                   "WHERE status=0 ORDER BY remaining ASC LIMIT 5", nativeQuery = true)
+    List<Campaign> findTop5ByStatusOrderByRemaining(Status status);
 
     @Query(value =  "SELECT *, n.q FROM campaign AS c, (SELECT id, COUNT(id_like) AS q " +
                     "FROM (SELECT * FROM campaign WHERE status = 0) " +

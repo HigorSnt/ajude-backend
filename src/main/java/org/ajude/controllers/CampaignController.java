@@ -35,9 +35,9 @@ public class CampaignController {
         this.jwtService = jwtService;
     }
 
-    @GetMapping("/home/received")
+    @GetMapping("/home/remaining")
     public ResponseEntity<List<CampaignDTO>> getCampaignHomeByReceived() {
-        return new ResponseEntity(this.campaignService.getCampaignHomeByReceived(), HttpStatus.OK);
+        return new ResponseEntity(this.campaignService.getCampaignHomeByRemaining(), HttpStatus.OK);
     }
 
     @GetMapping("/home/date")
