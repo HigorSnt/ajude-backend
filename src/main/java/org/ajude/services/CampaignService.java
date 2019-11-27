@@ -105,7 +105,6 @@ public class CampaignService {
     public Comment addCommentResponse(String campaignUrl, Long commentId, Comment reply) throws NotFoundException {
         Campaign campaign = this.getCampaign(campaignUrl);
         reply.setPostedAt(ZonedDateTime.now(ZoneId.of("UTC")));
-        System.out.println(reply.getPostedAt());
         Comment comment = campaign.addCommentResponse(commentId, reply);
 
         this.campaignRepository.save(campaign);
