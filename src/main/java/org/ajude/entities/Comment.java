@@ -61,7 +61,11 @@ public class Comment {
     }
 
     public void setReply(Comment reply) {
-        this.reply = reply;
+        if (this.reply == null)
+            this.reply = reply;
+        else {
+            this.reply.setReply(reply);
+        }
     }
 
     public void delete() {

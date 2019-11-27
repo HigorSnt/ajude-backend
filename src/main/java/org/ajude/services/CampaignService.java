@@ -93,7 +93,6 @@ public class CampaignService {
     public Comment addCampaignComment(String campaignUrl, Comment comment) throws NotFoundException {
         Campaign campaign = this.getCampaign(campaignUrl);
         comment.setPostedAt(ZonedDateTime.now(ZoneId.of("UTC")));
-        System.out.println(comment.getPostedAt());
         campaign.addComment(comment);
         campaign.getComments();
         campaign.getLikeList();

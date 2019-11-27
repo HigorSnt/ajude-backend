@@ -79,7 +79,6 @@ public class Campaign {
 
     public Comment addComment(Comment comment) {
         this.comments.add(comment);
-
         return comment;
     }
 
