@@ -104,9 +104,8 @@ for i in range(len(lista_respostas)):
         print("Comentario", comment['comment'])
 
 print()
-
 # Adicionando Likes
-for i in range(0, len(lista_usuarios)):
+for i in range(0, 2 * len(lista_usuarios) // 3):
     auth = tokens[i]
     header = {'Authorization': 'Bearer ' + auth}
     for j in range(0, randint(0, len(lista_campanhas)), randint(1, 3)):
@@ -117,3 +116,30 @@ for i in range(0, len(lista_usuarios)):
         except:
             print(r.raise_for_status())
             print("Erro ao adicionar likes")
+
+print()
+
+# Adicionando Dislikes
+for i in range(2 * len(lista_usuarios) // 3, len(lista_usuarios)):
+    auth = tokens[i]
+    header = {'Authorization': 'Bearer ' + auth}
+    for j in range(0, randint(0, len(lista_campanhas)), randint(1, 3)):
+        campaign = lista_campanhas[j % len(lista_campanhas)]['urlIdentifier']
+        try:
+            r = requests.post(url + f'/campaign/{campaign}/dislike', json={}, headers=header)
+            print("Dislike adicionado na campanha ", campaign)
+        except:
+            print(r.raise_for_status())
+            print("Erro ao adicionar likes")
+
+for i in range(len(lista_usuarios)):
+    auth = tokens[i]
+    header = {'Authorization': 'Bearer ' + auth}
+    value = str(randint(1, 1200)) + ".00"
+    campaign = lista_campanhas[len(lista_campanhas) - 1 - i]['urlIdentifier']
+    try:
+        r = requests.post(url + f'/campaign/{campaign}/donate', json={"value": value}, headers=header)
+        print(value, "doado por", lista_usuarios[i]['email'], "para", campaign)
+    except:
+        print(r.raise_for_status())
+        print("Erro ao adicionar doação")

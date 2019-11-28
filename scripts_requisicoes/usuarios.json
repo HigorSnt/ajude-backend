@@ -2,36 +2,85 @@
     {
         "firstName": "Mateus",
         "lastName": "Tranquilino",
-        "creditCardNumber": "12345678-90",
+        "creditCardNumber": "4929 8435 6591 0521",
         "email": "mateus.atranquilino@gmail.com",
         "password": "12345678"
     },
     {
         "firstName": "Higor",
         "lastName": "Dantas",
-        "creditCardNumber": "00000000-00",
+        "creditCardNumber": "4716 0817 5503 5711",
         "email": "higorsantos600@gmail.com",
         "password": "Senha123"
     },
     {
         "firstName": "João",
-        "lastName": "ÉotaldoJoão hehehe",
-        "creditCardNumber": "00000000-00",
+        "lastName": "da Silva",
+        "creditCardNumber": "4145 4945 6337 8788",
         "email": "higorsantos_36@hotmail.com",
         "password": "sei.la@"
     },
     {
         "firstName": "Pedro",
-        "lastName": "Pedrão",
-        "creditCardNumber": "00000000-00",
+        "lastName": "Gomes",
+        "creditCardNumber": "4005 1952 6959 3419",
         "email": "higor.dantas@ccc.ufcg.edu.br",
         "password": "abc125"
     },
     {
         "firstName": "Izaquiel",
         "lastName": "Cordeiro",
-        "creditCardNumber": "1651564151",
+        "creditCardNumber": "4188 5334 2095 4394",
         "email": "izaquiel.cordeiro@ccc.ufcg.edu.br",
         "password": "120325"
+    },
+    {
+        "firstName": "Tomás",
+        "lastName": "Pinto",
+        "creditCardNumber": "5178 8010 0492 2221",
+        "email": "TomasCorreiaPinto@rhyta.com",
+        "password": "yeec8thuGh"
+    },
+    {
+        "firstName": "Ana",
+        "lastName": "Almeida",
+        "creditCardNumber": "4532 1553 7664 0158",
+        "email": "AnaMartinsAlmeida@teleworm.us",
+        "password": "Aobijei1qu"
+    },
+    {
+        "firstName": "Clara",
+        "lastName": "Barros",
+        "creditCardNumber": "4532 4802 1392 8644",
+        "email": "ClaraCarvalhoBarros@rhyta.com",
+        "password": "Rihab0ahk"
+    },
+    {
+        "firstName": "Luan",
+        "lastName": "Cunha",
+        "creditCardNumber": "4929 4271 6994 0876",
+        "email": "LuanCunhaCarvalho@teleworm.us",
+        "password": "Ia2quae9mai"
+    },
+    {
+        "firstName": "Isabelle",
+        "lastName": "Pereira",
+        "creditCardNumber": "4556 5148 8325 7974",
+        "email": "IsabelleCunhaPereira@rhyta.com",
+        "password": "Fohngae7ae"
+    },
+    {
+        "firstName": "Beatrice",
+        "lastName": "Gomes",
+        "creditCardNumber": "4539 1864 3001 6237",
+        "email": "BeatriceSilvaGomes@armyspy.com",
+        "password": "Nah2aichu"
+    },
+    {
+        "firstName": "Daniel",
+        "lastName": "Melo",
+        "creditCardNumber": "4532 9549 2051 4749",
+        "email": "DanielCardosoMelo@rhyta.com",
+        "password": "iki6Eidu"
     }
 ]

@@ -42,8 +42,8 @@
         "goal": "5000"
     },
     {
-        "shortName": "Projeto Hope",
-        "urlIdentifier": "projeto-hope",
+        "shortName": "Projeto Animal",
+        "urlIdentifier": "projeto-animal",
         "description": "Projeto com intuito de resgatar e cuidar de animais abandonados",
         "deadline": "2020-11-30 23:59:59",
         "goal": "3000.00"
@@ -63,7 +63,7 @@
         "goal": "8000.00"
     },
     {
-        "shortName": "Reforma da casa do Senhora Maria",
+        "shortName": "Reforma da casa da Senhora Maria",
         "urlIdentifier": "reforma-da-casa-da-senhora-maria",
         "description": "O senhor Jose teve a casa devastada por um deslizamento",
         "deadline": "2020-09-06 23:59:59",
