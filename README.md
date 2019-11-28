@@ -5,6 +5,10 @@
 
 Repositório do backend do projeto _AJuDE - AquiJuntosDoandoEsperança_ da disciplina Projeto de Software 2019.2.  
 
+<p align="center">
+  <img src="src/main/resources/static/images/ajude.png" width="250px" height="100px"/>  
+</p>
+
 ## Tópicos
 
 - [ajude](#ajude)
